@@ -32,7 +32,6 @@ button {
 .delete {background:#ef4444;}
 .export {background:#22c55e;}
 
-.kpi {font-size:18px; margin:5px 0;}
 .green {color:#22c55e;}
 .yellow {color:#facc15;}
 .orange {color:#fb923c;}
@@ -107,6 +106,55 @@ function aging(d){
     return "red";
 }
 
+// ===== PROMESAS =====
+
+function obtenerPromesa(cuentaId){
+    return promesas.find(p => p.cuenta == cuentaId);
+}
+
+function estadoPromesa(p){
+
+    if(!p) return "—";
+
+    let hoy = new Date();
+    let fecha = new Date(p.fecha);
+
+    if(p.cumplido) return "✅ Cumplida";
+    if(hoy > fecha) return "🔴 Vencida";
+
+    return "🟡 Pendiente";
+}
+
+function guardarPromesa(){
+
+    let existente = promesas.find(p => p.cuenta == cuentaSelect.value);
+
+    if(existente){
+        existente.fecha = fechaPromesa.value;
+        existente.cumplido = false;
+    } else {
+        promesas.push({
+            cuenta: cuentaSelect.value,
+            fecha: fechaPromesa.value,
+            cumplido: false
+        });
+    }
+
+    localStorage.setItem("promesas", JSON.stringify(promesas));
+    render();
+}
+
+function cumplirPromesa(cuentaId){
+
+    let promesa = promesas.find(p => p.cuenta == cuentaId);
+
+    if(promesa){
+        promesa.cumplido = true;
+        localStorage.setItem("promesas", JSON.stringify(promesas));
+        render();
+    }
+}
+
 // ===== CLIENTES =====
 
 function guardarCliente(){
@@ -136,19 +184,6 @@ function guardarCuenta(){
     render();
 }
 
-// ===== PROMESAS =====
-
-function guardarPromesa(){
-
-    promesas.push({
-        cuenta: cuentaSelect.value,
-        fecha: fechaPromesa.value,
-        cumplido: false
-    });
-
-    localStorage.setItem("promesas", JSON.stringify(promesas));
-}
-
 // ===== DASHBOARD =====
 
 function dashboardCalc(){
@@ -161,35 +196,18 @@ function dashboardCalc(){
     let dso = cuentas.length ?
         cuentas.reduce((a,b)=>a+dias(b.fecha),0)/cuentas.length : 0;
 
-    let agingBuckets = {a:0,b:0,c:0,d:0};
-
-    cuentas.forEach(c=>{
-        let d = dias(c.fecha);
-        if(d<=30) agingBuckets.a+=c.monto;
-        else if(d<=60) agingBuckets.b+=c.monto;
-        else if(d<=90) agingBuckets.c+=c.monto;
-        else agingBuckets.d+=c.monto;
-    });
-
     dashboard.innerHTML = `
-    <div class="kpi">💰 Cartera total: $${total.toFixed(2)}</div>
-    <div class="kpi">⚠️ % vencida: ${total ? ((vencido/total)*100).toFixed(1):0}%</div>
-    <div class="kpi">⏱ DSO: ${dso.toFixed(1)} días</div>
-
-    <hr>
-
-    <div class="kpi green">0-30: $${agingBuckets.a.toFixed(0)}</div>
-    <div class="kpi yellow">31-60: $${agingBuckets.b.toFixed(0)}</div>
-    <div class="kpi orange">61-90: $${agingBuckets.c.toFixed(0)}</div>
-    <div class="kpi red">90+: $${agingBuckets.d.toFixed(0)}</div>
+    <div>💰 Cartera total: $${total.toFixed(0)}</div>
+    <div>⚠️ % vencida: ${total ? ((vencido/total)*100).toFixed(1):0}%</div>
+    <div>⏱ DSO: ${dso.toFixed(1)} días</div>
     `;
 }
 
-// ===== SCORE CLIENTE =====
+// ===== SCORE =====
 
 function scoreCliente(clienteId){
 
-     let cuentasCliente = cuentas.filter(c=>c.cliente==clienteId);
+    let cuentasCliente = cuentas.filter(c=>c.cliente==clienteId);
 
     let total = cuentasCliente.reduce((a,b)=>a+b.monto,0);
 
@@ -203,8 +221,8 @@ function scoreCliente(clienteId){
 
     let score = 100;
 
-    score -= ratio * 60;        // peso financiero
-    score -= (diasPromedio/90)*40; // peso comportamiento
+    score -= ratio * 60;
+    score -= (diasPromedio/90)*40;
 
     return Math.max(0, score).toFixed(0);
 }
@@ -212,10 +230,7 @@ function scoreCliente(clienteId){
 // ===== BLOQUEO =====
 
 function bloqueado(cliente){
-
-    let cuentasCliente = cuentas.filter(c=>c.cliente==cliente.id);
-
-    return cuentasCliente.some(c=>dias(c.fecha)>60);
+    return cuentas.some(c=>c.cliente==cliente.id && dias(c.fecha)>60);
 }
 
 // ===== RENDER =====
@@ -229,6 +244,7 @@ function render(){
     <th>Días</th>
     <th>Score</th>
     <th>Status</th>
+    <th>Promesa</th>
     <th></th>
     </tr>
     `;
@@ -237,6 +253,7 @@ function render(){
 
         let cliente = clientes.find(x=>x.id==c.cliente);
         let d = dias(c.fecha);
+        let promesa = obtenerPromesa(c.id);
 
         tabla.innerHTML += `
         <tr>
@@ -245,6 +262,11 @@ function render(){
         <td class="${aging(d)}">${d}</td>
         <td>${scoreCliente(c.cliente)}</td>
         <td>${bloqueado(cliente) ? "🚫 BLOQUEADO" : "OK"}</td>
+        <td>
+            ${promesa ? promesa.fecha : "—"}<br>
+            ${estadoPromesa(promesa)}<br>
+            ${promesa && !promesa.cumplido ? `<button onclick="cumplirPromesa(${c.id})">✔</button>` : ""}
+        </td>
         <td><button class="delete" onclick="eliminar(${c.id})">🗑</button></td>
         </tr>
         `;
@@ -267,12 +289,15 @@ function exportarExcel(){
 
     let data = cuentas.map(c=>{
         let cliente = clientes.find(x=>x.id==c.cliente);
+        let promesa = obtenerPromesa(c.id);
 
         return {
             Cliente: cliente?.nombre,
             Monto: c.monto,
             Dias: dias(c.fecha),
-            Score: scoreCliente(c.cliente)
+            Score: scoreCliente(c.cliente),
+            "Fecha Promesa": promesa ? promesa.fecha : "",
+            "Estado Promesa": estadoPromesa(promesa)
         };
     });
 
@@ -295,7 +320,12 @@ function cargar(){
     });
 
     cuentas.forEach(c=>{
-        cuentaSelect.innerHTML += `<option value="${c.id}">${c.id}</option>`;
+        let cliente = clientes.find(x=>x.id==c.cliente);
+
+        cuentaSelect.innerHTML += `
+        <option value="${c.id}">
+        ${cliente?.nombre} - $${c.monto}
+        </option>`;
     });
 
     render();
