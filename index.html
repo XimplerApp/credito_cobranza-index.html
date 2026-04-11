@@ -189,18 +189,24 @@ function dashboardCalc(){
 
 function scoreCliente(clienteId){
 
-    let cuentasCliente = cuentas.filter(c=>c.cliente==clienteId);
+     let cuentasCliente = cuentas.filter(c=>c.cliente==clienteId);
 
     let total = cuentasCliente.reduce((a,b)=>a+b.monto,0);
 
     let vencido = cuentasCliente.filter(c=>dias(c.fecha)>60)
                                  .reduce((a,b)=>a+b.monto,0);
 
+    let diasPromedio = cuentasCliente.length ?
+        cuentasCliente.reduce((a,b)=>a+dias(b.fecha),0)/cuentasCliente.length : 0;
+
     let ratio = total ? vencido/total : 0;
 
-    if(ratio > 0.5) return "🔴 ALTO";
-    if(ratio > 0.2) return "🟡 MEDIO";
-    return "🟢 BAJO";
+    let score = 100;
+
+    score -= ratio * 60;        // peso financiero
+    score -= (diasPromedio/90)*40; // peso comportamiento
+
+    return Math.max(0, score).toFixed(0);
 }
 
 // ===== BLOQUEO =====
