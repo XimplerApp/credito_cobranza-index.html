@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Crédito y Cobranza</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+body {font-family: Arial; background:#0f172a; color:white; padding:20px;}
+h1 {color:#38bdf8;}
+
+.card {background:#1e293b; padding:20px; border-radius:10px; margin-bottom:20px;}
+
+input, select {
+    width:100%;
+    padding:10px;
+    margin:6px 0;
+    border-radius:6px;
+    border:none;
+}
+
+button {
+    padding:10px;
+    margin-top:10px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.save {background:#22c55e;}
+.delete {background:#ef4444;}
+.export {background:#22c55e;}
+
+.kpi {font-size:18px; margin:5px 0;}
+.green {color:#22c55e;}
+.red {color:#ef4444;}
+.yellow {color:#facc15;}
+
+table {
+    width:100%;
+    border-collapse: collapse;
+    text-align:center;
+}
+
+th, td {
+    padding:10px;
+    border-bottom:1px solid #334155;
+}
+</style>
+</head>
+
+<body>
+
+<h1>💳 Crédito y Cobranza</h1>
+
+<!-- CLIENTES -->
+<div class="card">
+
+<h2>👤 Clientes</h2>
+
+<input id="clienteNombre" placeholder="Nombre cliente">
+
+<select id="tipo">
+<option value="A">A (45 días)</option>
+<option value="B">B (30 días)</option>
+<option value="C">C (Contado / 15 días)</option>
+</select>
+
+<button class="save" onclick="guardarCliente()">Guardar Cliente</button>
+
+</div>
+
+<!-- CUENTAS -->
+<div class="card">
+
+<h2>💰 Nueva Cuenta por Cobrar</h2>
+
+<select id="clienteSelect"></select>
+
+<input id="monto" placeholder="Monto $">
+<input type="date" id="fecha">
+
+<button class="save" onclick="guardarCuenta()">Registrar</button>
+
+</div>
+
+<!-- DASHBOARD -->
+<div class="card">
+
+<h2>📊 Dashboard de Cartera</h2>
+
+<div id="dashboard"></div>
+
+</div>
+
+<!-- TABLA -->
+<div class="card">
+
+<button class="export" onclick="exportarExcel()">📊 Exportar Excel</button>
+
+<table id="tabla">
+<tr>
+<th>Cliente</th>
+<th>Monto</th>
+<th>Días</th>
+<th>Estatus</th>
+<th></th>
+</tr>
+</table>
+
+</div>
+
+<script>
+
+let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+let cuentas = JSON.parse(localStorage.getItem("cuentas")) || [];
+
+// ===== CLIENTES =====
+
+function guardarCliente(){
+
+    let data = {
+        id: Date.now(),
+        nombre: clienteNombre.value,
+        tipo: tipo.value
+    };
+
+    clientes.push(data);
+    localStorage.setItem("clientes", JSON.stringify(clientes));
+
+    cargarClientes();
+}
+
+// ===== CARGAR CLIENTES =====
+
+function cargarClientes(){
+
+    clienteSelect.innerHTML="";
+
+    clientes.forEach(c=>{
+        clienteSelect.innerHTML += `<option value="${c.id}">${c.nombre} (${c.tipo})</option>`;
+    });
+}
+
+// ===== CUENTAS =====
+
+function guardarCuenta(){
+
+    let data = {
+        id: Date.now(),
+        cliente: clienteSelect.value,
+        monto: parseFloat(monto.value) || 0,
+        fecha: fecha.value
+    };
+
+    cuentas.push(data);
+    localStorage.setItem("cuentas", JSON.stringify(cuentas));
+
+    render();
+}
+
+// ===== CALCULAR DÍAS =====
+
+function dias(fecha){
+
+    let hoy = new Date();
+    let f = new Date(fecha);
+
+    return Math.floor((hoy - f) / (1000*60*60*24));
+}
+
+// ===== DASHBOARD =====
+
+function calcularDashboard(){
+
+    let total = cuentas.reduce((a,b)=>a+b.monto,0);
+
+    let vencido = cuentas.filter(c=>dias(c.fecha)>60)
+                         .reduce((a,b)=>a+b.monto,0);
+
+    let dso = cuentas.length ? 
+        cuentas.reduce((a,b)=>a+dias(b.fecha),0)/cuentas.length : 0;
+
+    dashboard.innerHTML = `
+    <div class="kpi">💰 Cartera total: $${total.toFixed(2)}</div>
+    <div class="kpi">⚠️ Vencido >60 días: $${vencido.toFixed(2)}</div>
+    <div class="kpi">⏱ DSO: ${dso.toFixed(1)} días</div>
+    `;
+}
+
+// ===== RENDER =====
+
+function render(){
+
+    tabla.innerHTML = `
+    <tr>
+    <th>Cliente</th>
+    <th>Monto</th>
+    <th>Días</th>
+    <th>Estatus</th>
+    <th></th>
+    </tr>
+    `;
+
+    cuentas.forEach(c=>{
+
+        let cliente = clientes.find(x=>x.id==c.cliente);
+
+        let d = dias(c.fecha);
+
+        let estatus = d>60 ? "🔴 Vencido" : d>30 ? "🟡 Riesgo" : "🟢 OK";
+
+        tabla.innerHTML += `
+        <tr>
+        <td>${cliente?.nombre}</td>
+        <td>$${c.monto}</td>
+        <td>${d}</td>
+        <td>${estatus}</td>
+        <td><button class="delete" onclick="eliminar(${c.id})">🗑</button></td>
+        </tr>
+        `;
+    });
+
+    calcularDashboard();
+}
+
+// ===== ELIMINAR =====
+
+function eliminar(id){
+
+    cuentas = cuentas.filter(c=>c.id!=id);
+    localStorage.setItem("cuentas", JSON.stringify(cuentas));
+    render();
+}
+
+// ===== EXPORT =====
+
+function exportarExcel(){
+
+    let data = cuentas.map(c=>{
+
+        let cliente = clientes.find(x=>x.id==c.cliente);
+
+        return {
+            "Cliente": cliente?.nombre,
+            "Tipo": cliente?.tipo,
+            "Monto": c.monto,
+            "Días": dias(c.fecha)
+        };
+    });
+
+    let ws = XLSX.utils.json_to_sheet(data);
+    let wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, ws, "Cartera");
+
+    XLSX.writeFile(wb, "Cartera.xlsx");
+}
+
+// INIT
+cargarClientes();
+render();
+
+</script>
+
+</body>
+</html>
