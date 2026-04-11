@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Crédito y Cobranza</title>
+<title>Crédito y Cobranza PRO</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -21,8 +21,8 @@ input, select {
 }
 
 button {
-    padding:10px;
-    margin-top:10px;
+    padding:8px;
+    margin:3px;
     border:none;
     border-radius:6px;
     cursor:pointer;
@@ -34,159 +34,182 @@ button {
 
 .kpi {font-size:18px; margin:5px 0;}
 .green {color:#22c55e;}
-.red {color:#ef4444;}
 .yellow {color:#facc15;}
+.orange {color:#fb923c;}
+.red {color:#ef4444;}
 
-table {
-    width:100%;
-    border-collapse: collapse;
-    text-align:center;
-}
-
-th, td {
-    padding:10px;
-    border-bottom:1px solid #334155;
-}
+table {width:100%; border-collapse:collapse; text-align:center;}
+th, td {padding:10px; border-bottom:1px solid #334155;}
 </style>
 </head>
 
 <body>
 
-<h1>💳 Crédito y Cobranza</h1>
+<h1>💳 Crédito y Cobranza PRO</h1>
 
 <!-- CLIENTES -->
 <div class="card">
-
 <h2>👤 Clientes</h2>
-
 <input id="clienteNombre" placeholder="Nombre cliente">
-
 <select id="tipo">
-<option value="A">A (45 días)</option>
-<option value="B">B (30 días)</option>
-<option value="C">C (Contado / 15 días)</option>
+<option value="45">A (45 días)</option>
+<option value="30">B (30 días)</option>
+<option value="15">C (15 días)</option>
 </select>
-
-<button class="save" onclick="guardarCliente()">Guardar Cliente</button>
-
+<button class="save" onclick="guardarCliente()">Guardar</button>
 </div>
 
 <!-- CUENTAS -->
 <div class="card">
-
-<h2>💰 Nueva Cuenta por Cobrar</h2>
-
+<h2>💰 Nueva Cuenta</h2>
 <select id="clienteSelect"></select>
-
 <input id="monto" placeholder="Monto $">
 <input type="date" id="fecha">
-
 <button class="save" onclick="guardarCuenta()">Registrar</button>
+</div>
 
+<!-- PROMESA -->
+<div class="card">
+<h2>📅 Promesa de Pago</h2>
+<select id="cuentaSelect"></select>
+<input type="date" id="fechaPromesa">
+<button class="save" onclick="guardarPromesa()">Guardar Promesa</button>
 </div>
 
 <!-- DASHBOARD -->
 <div class="card">
-
-<h2>📊 Dashboard de Cartera</h2>
-
+<h2>📊 Dashboard Ejecutivo</h2>
 <div id="dashboard"></div>
-
 </div>
 
 <!-- TABLA -->
 <div class="card">
-
-<button class="export" onclick="exportarExcel()">📊 Exportar Excel</button>
-
-<table id="tabla">
-<tr>
-<th>Cliente</th>
-<th>Monto</th>
-<th>Días</th>
-<th>Estatus</th>
-<th></th>
-</tr>
-</table>
-
+<button class="export" onclick="exportarExcel()">📊 Exportar</button>
+<table id="tabla"></table>
 </div>
 
 <script>
 
 let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 let cuentas = JSON.parse(localStorage.getItem("cuentas")) || [];
+let promesas = JSON.parse(localStorage.getItem("promesas")) || [];
+
+// ===== HELPERS =====
+
+function dias(fecha){
+    return Math.floor((new Date() - new Date(fecha)) / (1000*60*60*24));
+}
+
+function aging(d){
+    if(d<=30) return "green";
+    if(d<=60) return "yellow";
+    if(d<=90) return "orange";
+    return "red";
+}
 
 // ===== CLIENTES =====
 
 function guardarCliente(){
 
-    let data = {
+    clientes.push({
         id: Date.now(),
         nombre: clienteNombre.value,
-        tipo: tipo.value
-    };
-
-    clientes.push(data);
-    localStorage.setItem("clientes", JSON.stringify(clientes));
-
-    cargarClientes();
-}
-
-// ===== CARGAR CLIENTES =====
-
-function cargarClientes(){
-
-    clienteSelect.innerHTML="";
-
-    clientes.forEach(c=>{
-        clienteSelect.innerHTML += `<option value="${c.id}">${c.nombre} (${c.tipo})</option>`;
+        plazo: parseInt(tipo.value)
     });
+
+    localStorage.setItem("clientes", JSON.stringify(clientes));
+    cargar();
 }
 
 // ===== CUENTAS =====
 
 function guardarCuenta(){
 
-    let data = {
+    cuentas.push({
         id: Date.now(),
         cliente: clienteSelect.value,
-        monto: parseFloat(monto.value) || 0,
+        monto: +monto.value || 0,
         fecha: fecha.value
-    };
+    });
 
-    cuentas.push(data);
     localStorage.setItem("cuentas", JSON.stringify(cuentas));
-
     render();
 }
 
-// ===== CALCULAR DÍAS =====
+// ===== PROMESAS =====
 
-function dias(fecha){
+function guardarPromesa(){
 
-    let hoy = new Date();
-    let f = new Date(fecha);
+    promesas.push({
+        cuenta: cuentaSelect.value,
+        fecha: fechaPromesa.value,
+        cumplido: false
+    });
 
-    return Math.floor((hoy - f) / (1000*60*60*24));
+    localStorage.setItem("promesas", JSON.stringify(promesas));
 }
 
 // ===== DASHBOARD =====
 
-function calcularDashboard(){
+function dashboardCalc(){
 
     let total = cuentas.reduce((a,b)=>a+b.monto,0);
 
     let vencido = cuentas.filter(c=>dias(c.fecha)>60)
                          .reduce((a,b)=>a+b.monto,0);
 
-    let dso = cuentas.length ? 
+    let dso = cuentas.length ?
         cuentas.reduce((a,b)=>a+dias(b.fecha),0)/cuentas.length : 0;
+
+    let agingBuckets = {a:0,b:0,c:0,d:0};
+
+    cuentas.forEach(c=>{
+        let d = dias(c.fecha);
+        if(d<=30) agingBuckets.a+=c.monto;
+        else if(d<=60) agingBuckets.b+=c.monto;
+        else if(d<=90) agingBuckets.c+=c.monto;
+        else agingBuckets.d+=c.monto;
+    });
 
     dashboard.innerHTML = `
     <div class="kpi">💰 Cartera total: $${total.toFixed(2)}</div>
-    <div class="kpi">⚠️ Vencido >60 días: $${vencido.toFixed(2)}</div>
+    <div class="kpi">⚠️ % vencida: ${total ? ((vencido/total)*100).toFixed(1):0}%</div>
     <div class="kpi">⏱ DSO: ${dso.toFixed(1)} días</div>
+
+    <hr>
+
+    <div class="kpi green">0-30: $${agingBuckets.a.toFixed(0)}</div>
+    <div class="kpi yellow">31-60: $${agingBuckets.b.toFixed(0)}</div>
+    <div class="kpi orange">61-90: $${agingBuckets.c.toFixed(0)}</div>
+    <div class="kpi red">90+: $${agingBuckets.d.toFixed(0)}</div>
     `;
+}
+
+// ===== SCORE CLIENTE =====
+
+function scoreCliente(clienteId){
+
+    let cuentasCliente = cuentas.filter(c=>c.cliente==clienteId);
+
+    let total = cuentasCliente.reduce((a,b)=>a+b.monto,0);
+
+    let vencido = cuentasCliente.filter(c=>dias(c.fecha)>60)
+                                 .reduce((a,b)=>a+b.monto,0);
+
+    let ratio = total ? vencido/total : 0;
+
+    if(ratio > 0.5) return "🔴 ALTO";
+    if(ratio > 0.2) return "🟡 MEDIO";
+    return "🟢 BAJO";
+}
+
+// ===== BLOQUEO =====
+
+function bloqueado(cliente){
+
+    let cuentasCliente = cuentas.filter(c=>c.cliente==cliente.id);
+
+    return cuentasCliente.some(c=>dias(c.fecha)>60);
 }
 
 // ===== RENDER =====
@@ -198,7 +221,8 @@ function render(){
     <th>Cliente</th>
     <th>Monto</th>
     <th>Días</th>
-    <th>Estatus</th>
+    <th>Score</th>
+    <th>Status</th>
     <th></th>
     </tr>
     `;
@@ -206,29 +230,26 @@ function render(){
     cuentas.forEach(c=>{
 
         let cliente = clientes.find(x=>x.id==c.cliente);
-
         let d = dias(c.fecha);
-
-        let estatus = d>60 ? "🔴 Vencido" : d>30 ? "🟡 Riesgo" : "🟢 OK";
 
         tabla.innerHTML += `
         <tr>
         <td>${cliente?.nombre}</td>
         <td>$${c.monto}</td>
-        <td>${d}</td>
-        <td>${estatus}</td>
+        <td class="${aging(d)}">${d}</td>
+        <td>${scoreCliente(c.cliente)}</td>
+        <td>${bloqueado(cliente) ? "🚫 BLOQUEADO" : "OK"}</td>
         <td><button class="delete" onclick="eliminar(${c.id})">🗑</button></td>
         </tr>
         `;
     });
 
-    calcularDashboard();
+    dashboardCalc();
 }
 
-// ===== ELIMINAR =====
+// ===== DELETE =====
 
 function eliminar(id){
-
     cuentas = cuentas.filter(c=>c.id!=id);
     localStorage.setItem("cuentas", JSON.stringify(cuentas));
     render();
@@ -239,28 +260,42 @@ function eliminar(id){
 function exportarExcel(){
 
     let data = cuentas.map(c=>{
-
         let cliente = clientes.find(x=>x.id==c.cliente);
 
         return {
-            "Cliente": cliente?.nombre,
-            "Tipo": cliente?.tipo,
-            "Monto": c.monto,
-            "Días": dias(c.fecha)
+            Cliente: cliente?.nombre,
+            Monto: c.monto,
+            Dias: dias(c.fecha),
+            Score: scoreCliente(c.cliente)
         };
     });
 
     let ws = XLSX.utils.json_to_sheet(data);
     let wb = XLSX.utils.book_new();
-
     XLSX.utils.book_append_sheet(wb, ws, "Cartera");
 
-    XLSX.writeFile(wb, "Cartera.xlsx");
+    XLSX.writeFile(wb, "Cartera_PRO.xlsx");
 }
 
-// INIT
-cargarClientes();
-render();
+// ===== LOAD =====
+
+function cargar(){
+
+    clienteSelect.innerHTML="";
+    cuentaSelect.innerHTML="";
+
+    clientes.forEach(c=>{
+        clienteSelect.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+    });
+
+    cuentas.forEach(c=>{
+        cuentaSelect.innerHTML += `<option value="${c.id}">${c.id}</option>`;
+    });
+
+    render();
+}
+
+cargar();
 
 </script>
 
