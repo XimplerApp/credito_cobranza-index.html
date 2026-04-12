@@ -10,9 +10,10 @@
 body {font-family: Arial; background:#0f172a; color:white; padding:20px;}
 .card {background:#1e293b; padding:20px; border-radius:10px; margin-bottom:20px;}
 input, select {width:100%; padding:10px; margin:6px 0; border-radius:6px;}
-button {padding:8px; border:none; border-radius:6px; cursor:pointer;}
+button {padding:6px 10px; border:none; border-radius:6px; cursor:pointer;}
 .save {background:#22c55e;}
 table {width:100%; text-align:center;}
+th, td {padding:10px; border-bottom:1px solid #334155;}
 </style>
 </head>
 
@@ -20,14 +21,12 @@ table {width:100%; text-align:center;}
 
 <h1>💳 Crédito y Cobranza PRO</h1>
 
-<!-- CLIENTES -->
 <div class="card">
 <h2>Clientes</h2>
 <input id="clienteNombre" placeholder="Nombre">
 <button class="save" onclick="guardarCliente()">Guardar</button>
 </div>
 
-<!-- SCORING -->
 <div class="card">
 <h2>Scoring</h2>
 <select id="clienteScore"></select>
@@ -40,7 +39,6 @@ table {width:100%; text-align:center;}
 <button class="save" onclick="guardarScore()">Calcular</button>
 </div>
 
-<!-- CUENTAS -->
 <div class="card">
 <h2>Nueva Cuenta</h2>
 <select id="clienteSelect"></select>
@@ -55,7 +53,6 @@ table {width:100%; text-align:center;}
 <button class="save" onclick="guardarCuenta()">Registrar</button>
 </div>
 
-<!-- PROMESAS -->
 <div class="card">
 <h2>Promesa de Pago</h2>
 <select id="cuentaSelect"></select>
@@ -63,7 +60,6 @@ table {width:100%; text-align:center;}
 <button class="save" onclick="guardarPromesa()">Guardar Promesa</button>
 </div>
 
-<!-- TABLA -->
 <div class="card">
 <table id="tabla"></table>
 </div>
@@ -77,13 +73,11 @@ let promesas = JSON.parse(localStorage.getItem("promesas")) || [];
 let pagos = JSON.parse(localStorage.getItem("pagos")) || [];
 
 // ===== HELPERS =====
-
 function dias(fecha){
     return Math.floor((new Date() - new Date(fecha))/(1000*60*60*24));
 }
 
 // ===== CLIENTES =====
-
 function guardarCliente(){
     clientes.push({id:Date.now(), nombre:clienteNombre.value});
     localStorage.setItem("clientes", JSON.stringify(clientes));
@@ -91,7 +85,6 @@ function guardarCliente(){
 }
 
 // ===== SCORING =====
-
 function guardarScore(){
     let total = +antiguedad.value + +referencias.value + +historial.value +
                 +ticket.value + +riesgo.value + +garantias.value;
@@ -116,7 +109,6 @@ function obtenerScore(id){
 }
 
 // ===== CRÉDITO =====
-
 function nivelCredito(id){
 
     let score = obtenerScore(id);
@@ -132,7 +124,6 @@ function nivelCredito(id){
 }
 
 // ===== CUENTAS =====
-
 function guardarCuenta(){
 
     let creditoElegido = parseInt(credito.value);
@@ -155,9 +146,7 @@ function guardarCuenta(){
 }
 
 // ===== PROMESAS =====
-
 function guardarPromesa(){
-
     promesas.push({
         cuenta: cuentaSelect.value,
         fecha: fechaPromesa.value,
@@ -172,15 +161,41 @@ function obtenerPromesa(id){
     return promesas.find(p=>p.cuenta==id);
 }
 
-function estadoPromesa(p){
-    if(!p) return "-";
-    if(p.cumplido) return "✔";
-    if(new Date()>new Date(p.fecha)) return "Vencida";
-    return "Pendiente";
+// 🔥 BOTÓN CUMPLIR
+function cumplirPromesa(id){
+
+    let p = promesas.find(x=>x.cuenta==id);
+
+    if(p){
+        p.cumplido=true;
+
+        pagos.push({
+            cliente: cuentas.find(c=>c.id==id).cliente,
+            fecha: new Date().toISOString()
+        });
+
+        localStorage.setItem("pagos", JSON.stringify(pagos));
+        localStorage.setItem("promesas", JSON.stringify(promesas));
+
+        render();
+    }
+}
+
+// 🔥 ESTADO DINÁMICO
+function estadoPromesa(p, id){
+
+    if(!p) return "—";
+
+    if(p.cumplido) return "✅ Cumplida";
+
+    if(new Date()>new Date(p.fecha)){
+        return `🔴 Vencida <br><button onclick="cumplirPromesa(${id})">✔</button>`;
+    }
+
+    return `🟡 Pendiente <br><button onclick="cumplirPromesa(${id})">✔</button>`;
 }
 
 // ===== RENDER =====
-
 function render(){
 
     tabla.innerHTML=`
@@ -203,18 +218,17 @@ function render(){
         tabla.innerHTML+=`
         <tr>
         <td>${cliente?.nombre}</td>
-        <td>${score?score.total:"-"}</td>
-        <td>${nivelCredito(c.cliente)}</td>
-        <td>${c.credito}</td>
-        <td>${c.monto}</td>
+        <td>${score?score.total:"—"}</td>
+        <td>${nivelCredito(c.cliente)} días</td>
+        <td>${c.credito} días</td>
+        <td>$${c.monto.toLocaleString()}</td>
         <td>${dias(c.fecha)}</td>
-        <td>${estadoPromesa(promesa)}</td>
+        <td>${estadoPromesa(promesa, c.id)}</td>
         </tr>`;
     });
 }
 
 // ===== LOAD =====
-
 function cargar(){
 
     clienteSelect.innerHTML="";
