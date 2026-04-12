@@ -9,33 +9,13 @@
 <style>
 body {font-family: Arial; background:#0f172a; color:white; padding:20px;}
 h1 {color:#38bdf8;}
-
 .card {background:#1e293b; padding:20px; border-radius:10px; margin-bottom:20px;}
 
-input, select {
-    width:100%;
-    padding:10px;
-    margin:6px 0;
-    border-radius:6px;
-    border:none;
-}
+input, select {width:100%; padding:10px; margin:6px 0; border-radius:6px; border:none;}
 
-button {
-    padding:8px;
-    margin:3px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-}
-
+button {padding:8px; margin:3px; border:none; border-radius:6px; cursor:pointer;}
 .save {background:#22c55e;}
-.delete {background:#ef4444;}
 .export {background:#22c55e;}
-
-.green {color:#22c55e;}
-.yellow {color:#facc15;}
-.orange {color:#fb923c;}
-.red {color:#ef4444;}
 
 table {width:100%; border-collapse:collapse; text-align:center;}
 th, td {padding:10px; border-bottom:1px solid #334155;}
@@ -46,17 +26,14 @@ th, td {padding:10px; border-bottom:1px solid #334155;}
 
 <h1>💳 Crédito y Cobranza PRO</h1>
 
-<!-- CLIENTES -->
 <div class="card">
 <h2>👤 Clientes</h2>
 <input id="clienteNombre" placeholder="Nombre cliente">
 <button class="save" onclick="guardarCliente()">Guardar</button>
 </div>
 
-<!-- SCORING -->
 <div class="card">
 <h2>🧠 Scoring Crediticio</h2>
-
 <select id="clienteScore"></select>
 
 <input id="antiguedad" placeholder="Antigüedad (0-20)">
@@ -69,38 +46,29 @@ th, td {padding:10px; border-bottom:1px solid #334155;}
 <button class="save" onclick="guardarScore()">Calcular Score</button>
 </div>
 
-<!-- CUENTAS -->
 <div class="card">
 <h2>💰 Nueva Cuenta</h2>
 <select id="clienteSelect"></select>
 <input id="monto" placeholder="Monto $">
+
 <select id="credito">
 <option value="">Selecciona crédito</option>
 <option value="15">15 días</option>
 <option value="30">30 días</option>
 <option value="45">45 días</option>
 </select>
+
 <input type="date" id="fecha">
 <button class="save" onclick="guardarCuenta()">Registrar</button>
 </div>
 
-<!-- PROMESA -->
 <div class="card">
-<h2>📅 Promesa de Pago</h2>
-<select id="cuentaSelect"></select>
-<input type="date" id="fechaPromesa">
-<button class="save" onclick="guardarPromesa()">Guardar Promesa</button>
-</div>
-
-<!-- DASHBOARD -->
-<div class="card">
-<h2>📊 Dashboard Ejecutivo</h2>
+<h2>📊 Dashboard</h2>
 <div id="dashboard"></div>
 </div>
 
-<!-- TABLA -->
 <div class="card">
-<button class="export" onclick="exportarExcel()">📊 Exportar</button>
+<button class="export" onclick="exportarExcel()">Exportar</button>
 <table id="tabla"></table>
 </div>
 
@@ -108,17 +76,17 @@ th, td {padding:10px; border-bottom:1px solid #334155;}
 
 let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 let cuentas = JSON.parse(localStorage.getItem("cuentas")) || [];
-let promesas = JSON.parse(localStorage.getItem("promesas")) || [];
 let scores = JSON.parse(localStorage.getItem("scores")) || [];
-let pagos = JSON.parse(localStorage.getItem("pagos")) || [];
-
-// ===== HELPERS =====
 
 function dias(fecha){
     return Math.floor((new Date() - new Date(fecha)) / (1000*60*60*24));
 }
 
-// ===== SCORING =====
+function guardarCliente(){
+    clientes.push({id: Date.now(), nombre: clienteNombre.value});
+    localStorage.setItem("clientes", JSON.stringify(clientes));
+    cargar();
+}
 
 function guardarScore(){
 
@@ -132,27 +100,15 @@ function guardarScore(){
         (+riesgo.value||0) +
         (+garantias.value||0);
 
-    let banda="", condiciones="";
-
-    if(total>=80){
-        banda="A";
-        condiciones="45 días | 2% 10 Net 30";
-    }else if(total>=60){
-        banda="B";
-        condiciones="30 días | 1% 10 Net 30";
-    }else{
-        banda="C";
-        condiciones="Contado / 15 días";
-    }
+    let banda = total>=80?"A":total>=60?"B":"C";
 
     let existente = scores.find(s=>s.cliente==clienteId);
 
     if(existente){
         existente.total=total;
         existente.banda=banda;
-        existente.condiciones=condiciones;
     }else{
-        scores.push({cliente:clienteId,total,banda,condiciones});
+        scores.push({cliente:clienteId,total,banda});
     }
 
     localStorage.setItem("scores", JSON.stringify(scores));
@@ -163,101 +119,23 @@ function obtenerScore(clienteId){
     return scores.find(s=>s.cliente==clienteId);
 }
 
-// ===== NIVEL CRÉDITO AUTOMÁTICO =====
-
 function nivelCredito(clienteId){
 
     let score = obtenerScore(clienteId);
-    let pagosCliente = pagos.filter(p=>p.cliente==clienteId).length;
-
-    let cuentasCliente = cuentas.filter(c=>c.cliente==clienteId);
-
-    let tieneVencido = cuentasCliente.some(c=>dias(c.fecha)>60);
-
-    if(tieneVencido) return 0;
 
     if(score && score.banda==="C") return 0;
-
     if(score && score.total>=80) return 45;
-
-    if(pagosCliente>=2) return 30;
 
     return 15;
 }
 
-// ===== PROMESAS =====
-
-function obtenerPromesa(cuentaId){
-    return promesas.find(p => p.cuenta == cuentaId);
-}
-
-function estadoPromesa(p){
-    if(!p) return "—";
-    let hoy=new Date();
-    let fecha=new Date(p.fecha);
-    if(p.cumplido) return "✅ Cumplida";
-    if(hoy>fecha) return "🔴 Vencida";
-    return "🟡 Pendiente";
-}
-
-function guardarPromesa(){
-    let existente = promesas.find(p=>p.cuenta==cuentaSelect.value);
-
-    if(existente){
-        existente.fecha=fechaPromesa.value;
-        existente.cumplido=false;
-    }else{
-        promesas.push({
-            cuenta:cuentaSelect.value,
-            fecha:fechaPromesa.value,
-            cumplido:false
-        });
-    }
-
-    localStorage.setItem("promesas", JSON.stringify(promesas));
-    render();
-}
-
-function cumplirPromesa(id){
-
-    let p = promesas.find(x=>x.cuenta==id);
-
-    if(p){
-        p.cumplido=true;
-
-        pagos.push({
-            cliente: cuentas.find(c=>c.id==id).cliente,
-            fecha: new Date().toISOString()
-        });
-
-        localStorage.setItem("pagos", JSON.stringify(pagos));
-        localStorage.setItem("promesas", JSON.stringify(promesas));
-
-        render();
-    }
-}
-
-// ===== CLIENTES =====
-
-function guardarCliente(){
-    clientes.push({
-        id: Date.now(),
-        nombre: clienteNombre.value
-    });
-    localStorage.setItem("clientes", JSON.stringify(clientes));
-    cargar();
-}
-
-// ===== CUENTAS =====
-
 function guardarCuenta(){
 
     let clienteId = clienteSelect.value;
-    let nivel = nivelCredito(clienteId);
     let creditoElegido = parseInt(credito.value);
 
-    if(nivel === 0){
-        alert("Cliente bloqueado o solo contado");
+    if(!creditoElegido){
+        alert("Selecciona crédito");
         return;
     }
 
@@ -265,25 +143,13 @@ function guardarCuenta(){
         id: Date.now(),
         cliente: clienteId,
         monto: +monto.value || 0,
-        fecha: fecha.value
+        fecha: fecha.value,
+        credito: creditoElegido
     });
 
     localStorage.setItem("cuentas", JSON.stringify(cuentas));
     render();
 }
-
-// ===== DASHBOARD =====
-
-function dashboardCalc(){
-    let total = cuentas.reduce((a,b)=>a+b.monto,0);
-    let vencido = cuentas.filter(c=>dias(c.fecha)>60).reduce((a,b)=>a+b.monto,0);
-
-    dashboard.innerHTML=`
-    <div>💰 $${total.toFixed(0)}</div>
-    <div>⚠️ ${((vencido/total)*100||0).toFixed(1)}%</div>`;
-}
-
-// ===== RENDER =====
 
 function render(){
 
@@ -292,18 +158,16 @@ function render(){
     <th>Cliente</th>
     <th>Score</th>
     <th>Banda</th>
-    <th>Crédito</th>
+    <th>Crédito Sistema</th>
     <th>Crédito Otorgado</th>
     <th>Monto</th>
     <th>Días</th>
-    <th>Promesa</th>
     </tr>`;
 
     cuentas.forEach(c=>{
 
         let cliente=clientes.find(x=>x.id==c.cliente);
         let score=obtenerScore(c.cliente);
-        let promesa=obtenerPromesa(c.id);
 
         tabla.innerHTML+=`
         <tr>
@@ -311,35 +175,27 @@ function render(){
         <td>${score?score.total:"—"}</td>
         <td>${score?score.banda:"—"}</td>
         <td>${nivelCredito(c.cliente)} días</td>
-        <td>${c.credito || "-"} días</td>
+        <td>${c.credito} días</td>
         <td>$${c.monto}</td>
         <td>${dias(c.fecha)}</td>
-        <td>${promesa?estadoPromesa(promesa):"—"}</td>
         </tr>`;
     });
-
-    dashboardCalc();
 }
-
-// ===== EXPORT =====
 
 function exportarExcel(){
 
     let data = cuentas.map(c=>{
         let cliente=clientes.find(x=>x.id==c.cliente);
         let score=obtenerScore(c.cliente);
-        let promesa=obtenerPromesa(c.id);
 
         return{
             Cliente:cliente?.nombre,
             Score:score?.total,
             Banda:score?.banda,
-            Credito:nivelCredito(c.cliente),
+            CreditoSistema:nivelCredito(c.cliente),
             CreditoOtorgado:c.credito,
             Monto:c.monto,
-            Dias:dias(c.fecha),
-            Promesa:promesa?.fecha,
-            Estado:estadoPromesa(promesa)
+            Dias:dias(c.fecha)
         };
     });
 
@@ -349,22 +205,14 @@ function exportarExcel(){
     XLSX.writeFile(wb,"Cartera_PRO.xlsx");
 }
 
-// ===== LOAD =====
-
 function cargar(){
 
     clienteSelect.innerHTML="";
     clienteScore.innerHTML="";
-    cuentaSelect.innerHTML="";
 
     clientes.forEach(c=>{
         clienteSelect.innerHTML+=`<option value="${c.id}">${c.nombre}</option>`;
         clienteScore.innerHTML+=`<option value="${c.id}">${c.nombre}</option>`;
-    });
-
-    cuentas.forEach(c=>{
-        let cliente=clientes.find(x=>x.id==c.cliente);
-        cuentaSelect.innerHTML+=`<option value="${c.id}">${cliente?.nombre} - $${c.monto}</option>`;
     });
 
     render();
