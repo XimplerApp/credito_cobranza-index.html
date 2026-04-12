@@ -61,6 +61,11 @@ th, td {padding:10px; border-bottom:1px solid #334155;}
 </div>
 
 <div class="card">
+<h2>📊 Tablero Ejecutivo de Cartera</h2>
+<div id="kpis"></div>
+</div>
+
+<div class="card">
 
 <button class="save" onclick="exportarCSV()">📊 Exportar CSV</button>
 
@@ -199,6 +204,48 @@ function estadoPromesa(p, id){
     return `🟡 Pendiente <br><button onclick="cumplirPromesa(${id})">✔</button>`;
 }
 
+function calcularKPIs(){
+
+    let total = cuentas.reduce((a,b)=>a+b.monto,0);
+
+    let dso = cuentas.length ?
+        cuentas.reduce((a,b)=>a+Math.max(0,dias(b.fecha)),0)/cuentas.length : 0;
+
+    let cartera60 = cuentas.filter(c=>dias(c.fecha)>60)
+                           .reduce((a,b)=>a+b.monto,0);
+
+    let pct60 = total ? (cartera60/total)*100 : 0;
+
+    let cobro30 = cuentas.filter(c=>dias(c.fecha)<=30).length;
+    let pctCobro30 = cuentas.length ? (cobro30/cuentas.length)*100 : 0;
+
+    let promesasTot = promesas.length;
+    let cumplidas = promesas.filter(p=>p.cumplido).length;
+    let pctPTP = promesasTot ? (cumplidas/promesasTot)*100 : 0;
+
+    return {
+        dso,
+        pct60,
+        pctCobro30,
+        pctPTP
+    };
+}
+
+function semaforo(valor, meta, tipo){
+
+    if(tipo==="max"){
+        if(valor <= meta) return "🟢";
+        if(valor <= meta*1.2) return "🟡";
+        return "🔴";
+    }
+
+    if(tipo==="min"){
+        if(valor >= meta) return "🟢";
+        if(valor >= meta*0.8) return "🟡";
+        return "🔴";
+    }
+}
+
 // ===== RENDER =====
 function render(){
 
@@ -231,6 +278,39 @@ function render(){
         </tr>`;
     });
 }
+
+let k = calcularKPIs();
+
+kpis.innerHTML = `
+<table>
+<tr><th>KPI</th><th>Resultado</th><th>Estado</th></tr>
+
+<tr>
+<td>DSO</td>
+<td>${k.dso.toFixed(1)} días</td>
+<td>${semaforo(k.dso,45,"max")}</td>
+</tr>
+
+<tr>
+<td>% cartera 60+</td>
+<td>${k.pct60.toFixed(1)}%</td>
+<td>${semaforo(k.pct60,10,"max")}</td>
+</tr>
+
+<tr>
+<td>Cobro a 30 días</td>
+<td>${k.pctCobro30.toFixed(1)}%</td>
+<td>${semaforo(k.pctCobro30,70,"min")}</td>
+</tr>
+
+<tr>
+<td>PTP cumplidas</td>
+<td>${k.pctPTP.toFixed(1)}%</td>
+<td>${semaforo(k.pctPTP,85,"min")}</td>
+</tr>
+
+</table>
+`;
 
 // ===== LOAD =====
 function cargar(){
