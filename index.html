@@ -74,6 +74,12 @@ th, td {padding:10px; border-bottom:1px solid #334155;}
 <h2>💰 Nueva Cuenta</h2>
 <select id="clienteSelect"></select>
 <input id="monto" placeholder="Monto $">
+<select id="credito">
+<option value="">Selecciona crédito</option>
+<option value="15">15 días</option>
+<option value="30">30 días</option>
+<option value="45">45 días</option>
+</select>
 <input type="date" id="fecha">
 <button class="save" onclick="guardarCuenta()">Registrar</button>
 </div>
@@ -248,6 +254,7 @@ function guardarCuenta(){
 
     let clienteId = clienteSelect.value;
     let nivel = nivelCredito(clienteId);
+    let creditoElegido = parseInt(credito.value);
 
     if(nivel === 0){
         alert("Cliente bloqueado o solo contado");
@@ -286,6 +293,7 @@ function render(){
     <th>Score</th>
     <th>Banda</th>
     <th>Crédito</th>
+    <th>Crédito Otorgado</th>
     <th>Monto</th>
     <th>Días</th>
     <th>Promesa</th>
@@ -303,6 +311,7 @@ function render(){
         <td>${score?score.total:"—"}</td>
         <td>${score?score.banda:"—"}</td>
         <td>${nivelCredito(c.cliente)} días</td>
+        <td>${c.credito || "-"} días</td>
         <td>$${c.monto}</td>
         <td>${dias(c.fecha)}</td>
         <td>${promesa?estadoPromesa(promesa):"—"}</td>
@@ -326,6 +335,7 @@ function exportarExcel(){
             Score:score?.total,
             Banda:score?.banda,
             Credito:nivelCredito(c.cliente),
+            CreditoOtorgado:c.credito,
             Monto:c.monto,
             Dias:dias(c.fecha),
             Promesa:promesa?.fecha,
