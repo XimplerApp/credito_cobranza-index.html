@@ -61,7 +61,11 @@ th, td {padding:10px; border-bottom:1px solid #334155;}
 </div>
 
 <div class="card">
+
+<button class="save" onclick="exportarExcel()">📊 Exportar Excel</button>
+
 <table id="tabla"></table>
+
 </div>
 
 <script>
@@ -246,6 +250,64 @@ function cargar(){
     });
 
     render();
+}
+
+function exportarExcel(){
+
+    let data = cuentas.map(c=>{
+
+        let cliente = clientes.find(x=>x.id==c.cliente);
+        let score = obtenerScore(c.cliente);
+        let promesa = obtenerPromesa(c.id);
+
+        return {
+            Cliente: cliente?.nombre,
+            Score: score?.total || "",
+            Banda: score?.banda || "",
+            CreditoSistema: nivelCredito(c.cliente),
+            CreditoOtorgado: c.credito,
+            Monto: c.monto,
+            Dias: dias(c.fecha),
+            Promesa: promesa?.fecha || "",
+            EstadoPromesa: promesa ? (promesa.cumplido ? "Cumplida" : "Pendiente") : ""
+        };
+    });
+
+    let ws = XLSX.utils.json_to_sheet(data);
+    let wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, ws, "Cartera");
+
+    XLSX.writeFile(wb, "Cartera_PRO.xlsx");
+}
+
+function exportarExcel(){
+
+    let data = cuentas.map(c=>{
+
+        let cliente = clientes.find(x=>x.id==c.cliente);
+        let score = obtenerScore(c.cliente);
+        let promesa = obtenerPromesa(c.id);
+
+        return {
+            Cliente: cliente?.nombre,
+            Score: score?.total || "",
+            Banda: score?.banda || "",
+            CreditoSistema: nivelCredito(c.cliente),
+            CreditoOtorgado: c.credito,
+            Monto: c.monto,
+            Dias: dias(c.fecha),
+            Promesa: promesa?.fecha || "",
+            EstadoPromesa: promesa ? (promesa.cumplido ? "Cumplida" : "Pendiente") : ""
+        };
+    });
+
+    let ws = XLSX.utils.json_to_sheet(data);
+    let wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, ws, "Cartera");
+
+    XLSX.writeFile(wb, "Cartera_PRO.xlsx");
 }
 
 cargar();
