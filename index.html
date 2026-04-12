@@ -50,11 +50,6 @@ th, td {padding:10px; border-bottom:1px solid #334155;}
 <div class="card">
 <h2>👤 Clientes</h2>
 <input id="clienteNombre" placeholder="Nombre cliente">
-<select id="tipo">
-<option value="45">A (45 días)</option>
-<option value="30">B (30 días)</option>
-<option value="15">C (15 días)</option>
-</select>
 <button class="save" onclick="guardarCliente()">Guardar</button>
 </div>
 
@@ -109,18 +104,12 @@ let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 let cuentas = JSON.parse(localStorage.getItem("cuentas")) || [];
 let promesas = JSON.parse(localStorage.getItem("promesas")) || [];
 let scores = JSON.parse(localStorage.getItem("scores")) || [];
+let pagos = JSON.parse(localStorage.getItem("pagos")) || [];
 
 // ===== HELPERS =====
 
 function dias(fecha){
     return Math.floor((new Date() - new Date(fecha)) / (1000*60*60*24));
-}
-
-function aging(d){
-    if(d<=30) return "green";
-    if(d<=60) return "yellow";
-    if(d<=90) return "orange";
-    return "red";
 }
 
 // ===== SCORING =====
@@ -141,10 +130,10 @@ function guardarScore(){
 
     if(total>=80){
         banda="A";
-        condiciones="Crédito alto | 45 días | 2% 10 Net 30";
+        condiciones="45 días | 2% 10 Net 30";
     }else if(total>=60){
         banda="B";
-        condiciones="Crédito medio | 30 días | 1% 10 Net 30";
+        condiciones="30 días | 1% 10 Net 30";
     }else{
         banda="C";
         condiciones="Contado / 15 días";
@@ -166,6 +155,28 @@ function guardarScore(){
 
 function obtenerScore(clienteId){
     return scores.find(s=>s.cliente==clienteId);
+}
+
+// ===== NIVEL CRÉDITO AUTOMÁTICO =====
+
+function nivelCredito(clienteId){
+
+    let score = obtenerScore(clienteId);
+    let pagosCliente = pagos.filter(p=>p.cliente==clienteId).length;
+
+    let cuentasCliente = cuentas.filter(c=>c.cliente==clienteId);
+
+    let tieneVencido = cuentasCliente.some(c=>dias(c.fecha)>60);
+
+    if(tieneVencido) return 0;
+
+    if(score && score.banda==="C") return 0;
+
+    if(score && score.total>=80) return 45;
+
+    if(pagosCliente>=2) return 30;
+
+    return 15;
 }
 
 // ===== PROMESAS =====
@@ -202,10 +213,20 @@ function guardarPromesa(){
 }
 
 function cumplirPromesa(id){
+
     let p = promesas.find(x=>x.cuenta==id);
+
     if(p){
         p.cumplido=true;
+
+        pagos.push({
+            cliente: cuentas.find(c=>c.id==id).cliente,
+            fecha: new Date().toISOString()
+        });
+
+        localStorage.setItem("pagos", JSON.stringify(pagos));
         localStorage.setItem("promesas", JSON.stringify(promesas));
+
         render();
     }
 }
@@ -215,8 +236,7 @@ function cumplirPromesa(id){
 function guardarCliente(){
     clientes.push({
         id: Date.now(),
-        nombre: clienteNombre.value,
-        plazo: parseInt(tipo.value)
+        nombre: clienteNombre.value
     });
     localStorage.setItem("clientes", JSON.stringify(clientes));
     cargar();
@@ -226,16 +246,17 @@ function guardarCliente(){
 
 function guardarCuenta(){
 
-    let score = obtenerScore(clienteSelect.value);
+    let clienteId = clienteSelect.value;
+    let nivel = nivelCredito(clienteId);
 
-    if(score && score.banda==="C"){
-        alert("Cliente con crédito restringido");
+    if(nivel === 0){
+        alert("Cliente bloqueado o solo contado");
         return;
     }
 
     cuentas.push({
         id: Date.now(),
-        cliente: clienteSelect.value,
+        cliente: clienteId,
         monto: +monto.value || 0,
         fecha: fecha.value
     });
@@ -249,22 +270,10 @@ function guardarCuenta(){
 function dashboardCalc(){
     let total = cuentas.reduce((a,b)=>a+b.monto,0);
     let vencido = cuentas.filter(c=>dias(c.fecha)>60).reduce((a,b)=>a+b.monto,0);
-    let dso = cuentas.length ? cuentas.reduce((a,b)=>a+dias(b.fecha),0)/cuentas.length : 0;
 
     dashboard.innerHTML=`
     <div>💰 $${total.toFixed(0)}</div>
-    <div>⚠️ ${((vencido/total)*100||0).toFixed(1)}%</div>
-    <div>⏱ ${dso.toFixed(1)} días</div>`;
-}
-
-// ===== SCORE DINÁMICO =====
-
-function scoreCliente(clienteId){
-    let cuentasCliente=cuentas.filter(c=>c.cliente==clienteId);
-    let total=cuentasCliente.reduce((a,b)=>a+b.monto,0);
-    let vencido=cuentasCliente.filter(c=>dias(c.fecha)>60).reduce((a,b)=>a+b.monto,0);
-    let ratio=total? vencido/total:0;
-    return (100-(ratio*100)).toFixed(0);
+    <div>⚠️ ${((vencido/total)*100||0).toFixed(1)}%</div>`;
 }
 
 // ===== RENDER =====
@@ -276,9 +285,9 @@ function render(){
     <th>Cliente</th>
     <th>Score</th>
     <th>Banda</th>
+    <th>Crédito</th>
     <th>Monto</th>
     <th>Días</th>
-    <th>Status</th>
     <th>Promesa</th>
     </tr>`;
 
@@ -293,9 +302,9 @@ function render(){
         <td>${cliente?.nombre}</td>
         <td>${score?score.total:"—"}</td>
         <td>${score?score.banda:"—"}</td>
+        <td>${nivelCredito(c.cliente)} días</td>
         <td>$${c.monto}</td>
         <td>${dias(c.fecha)}</td>
-        <td>${dias(c.fecha)>60?"🔴":"OK"}</td>
         <td>${promesa?estadoPromesa(promesa):"—"}</td>
         </tr>`;
     });
@@ -316,6 +325,7 @@ function exportarExcel(){
             Cliente:cliente?.nombre,
             Score:score?.total,
             Banda:score?.banda,
+            Credito:nivelCredito(c.cliente),
             Monto:c.monto,
             Dias:dias(c.fecha),
             Promesa:promesa?.fecha,
