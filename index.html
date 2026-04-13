@@ -61,6 +61,20 @@ th, td {padding:10px; border-bottom:1px solid #334155;}
 </div>
 
 <div class="card">
+<h2>💰 Cost to Collect</h2>
+
+<input id="horas" placeholder="Costo horas personal">
+<input id="viaticos" placeholder="Viáticos">
+<input id="comunicacion" placeholder="Llamadas / comunicación">
+<input id="admin" placeholder="Gastos administrativos">
+
+<button class="save" onclick="guardarCostos()">Guardar Costos</button>
+
+<div id="costDashboard"></div>
+
+</div>
+
+<div class="card">
 <h2>📊 Tablero Ejecutivo de Cartera</h2>
 <div id="kpis"></div>
 </div>
@@ -80,6 +94,7 @@ let cuentas = JSON.parse(localStorage.getItem("cuentas")) || [];
 let scores = JSON.parse(localStorage.getItem("scores")) || [];
 let promesas = JSON.parse(localStorage.getItem("promesas")) || [];
 let pagos = JSON.parse(localStorage.getItem("pagos")) || [];
+let costos = JSON.parse(localStorage.getItem("costos")) || {};
 
 // ===== HELPERS =====
 function dias(fecha){
@@ -246,6 +261,43 @@ function semaforo(valor, meta, tipo){
     }
 }
 
+// ===== COST TO COLLECT =====
+
+let costos = JSON.parse(localStorage.getItem("costos")) || {};
+
+function guardarCostos(){
+
+    costos = {
+        horas: +horas.value || 0,
+        viaticos: +viaticos.value || 0,
+        comunicacion: +comunicacion.value || 0,
+        admin: +admin.value || 0
+    };
+
+    localStorage.setItem("costos", JSON.stringify(costos));
+    render();
+}
+
+function calcularCostToCollect(){
+
+    let totalCost =
+        (costos.horas || 0) +
+        (costos.viaticos || 0) +
+        (costos.comunicacion || 0) +
+        (costos.admin || 0);
+
+    let recuperado = pagos.length 
+        ? cuentas.reduce((a,b)=>a+b.monto,0)
+        : 0;
+
+    let ratio = recuperado ? (totalCost / recuperado) * 100 : 0;
+
+    return {
+        totalCost,
+        ratio
+    };
+}
+
 // ===== RENDER =====
 function render(){
 
@@ -310,6 +362,13 @@ kpis.innerHTML = `
 </tr>
 
 </table>
+`;
+
+let cost = calcularCostToCollect();
+
+costDashboard.innerHTML = `
+<div>💰 Costo cobranza: $${cost.totalCost.toLocaleString()}</div>
+<div>📊 Cost to Collect: ${cost.ratio.toFixed(1)}%</div>
 `;
 
 // ===== LOAD =====
