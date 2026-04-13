@@ -174,10 +174,11 @@ function cumplirPromesa(id){
     if(p){
         p.cumplido=true;
 
-        pagos.push({
-            cliente: cuentas.find(c=>c.id==id).cliente,
-            fecha: new Date().toISOString()
-        });
+       pagos.push({
+    cuenta: id, // 🔥 CLAVE
+    cliente: cuentas.find(c=>c.id==id).cliente,
+    fecha: new Date().toISOString()
+});
 
         localStorage.setItem("pagos", JSON.stringify(pagos));
         localStorage.setItem("promesas", JSON.stringify(promesas));
