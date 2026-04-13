@@ -251,7 +251,12 @@ function guardarCostos(){
 
 function calcularCostToCollect(){
     let totalCost = (costos.horas||0)+(costos.viaticos||0)+(costos.comunicacion||0)+(costos.admin||0);
-    let recuperado = cuentas.reduce((a,b)=>a+b.monto,0);
+    let recuperado = pagos.length
+    ? pagos.reduce((total, p) => {
+        let cuenta = cuentas.find(c=>c.id == p.cuenta);
+        return total + (cuenta?.monto || 0);
+      }, 0)
+    : 0;
     let ratio = recuperado ? (totalCost / recuperado)*100 : 0;
     return {totalCost,ratio};
 }
@@ -280,7 +285,7 @@ function render(){
         <td>${score?score.total:"—"}</td>
         <td>${nivelCredito(c.cliente)} días</td>
         <td>${c.credito} días</td>
-        <td>$${c.monto.toLocaleString()}</td>
+        <td>$${c.monto.toLocaleString('es-MX')}</td>
         <td>${dias(c.fecha)}</td>
         <td>${estadoPromesa(promesa, c.id)}</td>
         </tr>`;
@@ -300,7 +305,7 @@ function render(){
     let cost = calcularCostToCollect();
 
     costDashboard.innerHTML = `
-    <div>💰 Costo cobranza: $${cost.totalCost.toLocaleString()}</div>
+    <div>💰 Costo cobranza: $${cost.totalCost.toLocaleString('es-MX')}</div>
     <div>📊 Cost to Collect: ${cost.ratio.toFixed(1)}%</div>
     `;
 }
