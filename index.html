@@ -62,16 +62,12 @@ th, td {padding:10px; border-bottom:1px solid #334155;}
 
 <div class="card">
 <h2>💰 Cost to Collect</h2>
-
 <input id="horas" placeholder="Costo horas personal">
 <input id="viaticos" placeholder="Viáticos">
-<input id="comunicacion" placeholder="Llamadas / comunicación">
-<input id="admin" placeholder="Gastos administrativos">
-
+<input id="comunicacion" placeholder="Comunicaciones">
+<input id="admin" placeholder="Administrativos">
 <button class="save" onclick="guardarCostos()">Guardar Costos</button>
-
 <div id="costDashboard"></div>
-
 </div>
 
 <div class="card">
@@ -80,11 +76,8 @@ th, td {padding:10px; border-bottom:1px solid #334155;}
 </div>
 
 <div class="card">
-
 <button class="save" onclick="exportarCSV()">📊 Exportar CSV</button>
-
 <table id="tabla"></table>
-
 </div>
 
 <script>
@@ -96,19 +89,16 @@ let promesas = JSON.parse(localStorage.getItem("promesas")) || [];
 let pagos = JSON.parse(localStorage.getItem("pagos")) || [];
 let costos = JSON.parse(localStorage.getItem("costos")) || {};
 
-// ===== HELPERS =====
 function dias(fecha){
     return Math.floor((new Date() - new Date(fecha))/(1000*60*60*24));
 }
 
-// ===== CLIENTES =====
 function guardarCliente(){
     clientes.push({id:Date.now(), nombre:clienteNombre.value});
     localStorage.setItem("clientes", JSON.stringify(clientes));
     cargar();
 }
 
-// ===== SCORING =====
 function guardarScore(){
     let total = +antiguedad.value + +referencias.value + +historial.value +
                 +ticket.value + +riesgo.value + +garantias.value;
@@ -132,9 +122,7 @@ function obtenerScore(id){
     return scores.find(s=>s.cliente==id);
 }
 
-// ===== CRÉDITO =====
 function nivelCredito(id){
-
     let score = obtenerScore(id);
     let pagosCliente = pagos.filter(p=>p.cliente==id).length;
     let vencido = cuentas.some(c=>c.cliente==id && dias(c.fecha)>60);
@@ -147,11 +135,8 @@ function nivelCredito(id){
     return 15;
 }
 
-// ===== CUENTAS =====
 function guardarCuenta(){
-
     let creditoElegido = parseInt(credito.value);
-
     if(!creditoElegido){
         alert("Selecciona crédito");
         return;
@@ -169,7 +154,6 @@ function guardarCuenta(){
     render();
 }
 
-// ===== PROMESAS =====
 function guardarPromesa(){
     promesas.push({
         cuenta: cuentaSelect.value,
@@ -185,11 +169,8 @@ function obtenerPromesa(id){
     return promesas.find(p=>p.cuenta==id);
 }
 
-// 🔥 BOTÓN CUMPLIR
 function cumplirPromesa(id){
-
     let p = promesas.find(x=>x.cuenta==id);
-
     if(p){
         p.cumplido=true;
 
@@ -205,11 +186,8 @@ function cumplirPromesa(id){
     }
 }
 
-// 🔥 ESTADO DINÁMICO
 function estadoPromesa(p, id){
-
     if(!p) return "—";
-
     if(p.cumplido) return "✅ Cumplida";
 
     if(new Date()>new Date(p.fecha)){
@@ -220,7 +198,6 @@ function estadoPromesa(p, id){
 }
 
 function calcularKPIs(){
-
     let total = cuentas.reduce((a,b)=>a+b.monto,0);
 
     let dso = cuentas.length ?
@@ -238,22 +215,15 @@ function calcularKPIs(){
     let cumplidas = promesas.filter(p=>p.cumplido).length;
     let pctPTP = promesasTot ? (cumplidas/promesasTot)*100 : 0;
 
-    return {
-        dso,
-        pct60,
-        pctCobro30,
-        pctPTP
-    };
+    return {dso,pct60,pctCobro30,pctPTP};
 }
 
 function semaforo(valor, meta, tipo){
-
     if(tipo==="max"){
         if(valor <= meta) return "🟢";
         if(valor <= meta*1.2) return "🟡";
         return "🔴";
     }
-
     if(tipo==="min"){
         if(valor >= meta) return "🟢";
         if(valor >= meta*0.8) return "🟡";
@@ -261,44 +231,24 @@ function semaforo(valor, meta, tipo){
     }
 }
 
-// ===== COST TO COLLECT =====
-
-let costos = JSON.parse(localStorage.getItem("costos")) || {};
-
 function guardarCostos(){
-
     costos = {
         horas: +horas.value || 0,
         viaticos: +viaticos.value || 0,
         comunicacion: +comunicacion.value || 0,
         admin: +admin.value || 0
     };
-
     localStorage.setItem("costos", JSON.stringify(costos));
     render();
 }
 
 function calcularCostToCollect(){
-
-    let totalCost =
-        (costos.horas || 0) +
-        (costos.viaticos || 0) +
-        (costos.comunicacion || 0) +
-        (costos.admin || 0);
-
-    let recuperado = pagos.length 
-        ? cuentas.reduce((a,b)=>a+b.monto,0)
-        : 0;
-
-    let ratio = recuperado ? (totalCost / recuperado) * 100 : 0;
-
-    return {
-        totalCost,
-        ratio
-    };
+    let totalCost = (costos.horas||0)+(costos.viaticos||0)+(costos.comunicacion||0)+(costos.admin||0);
+    let recuperado = cuentas.reduce((a,b)=>a+b.monto,0);
+    let ratio = recuperado ? (totalCost / recuperado)*100 : 0;
+    return {totalCost,ratio};
 }
 
-// ===== RENDER =====
 function render(){
 
     tabla.innerHTML=`
@@ -313,7 +263,6 @@ function render(){
     </tr>`;
 
     cuentas.forEach(c=>{
-
         let cliente = clientes.find(x=>x.id==c.cliente);
         let score = obtenerScore(c.cliente);
         let promesa = obtenerPromesa(c.id);
@@ -329,49 +278,26 @@ function render(){
         <td>${estadoPromesa(promesa, c.id)}</td>
         </tr>`;
     });
+
+    let k = calcularKPIs();
+
+    kpis.innerHTML = `
+    <table>
+    <tr><th>KPI</th><th>Resultado</th><th>Estado</th></tr>
+    <tr><td>DSO</td><td>${k.dso.toFixed(1)} días</td><td>${semaforo(k.dso,45,"max")}</td></tr>
+    <tr><td>% cartera 60+</td><td>${k.pct60.toFixed(1)}%</td><td>${semaforo(k.pct60,10,"max")}</td></tr>
+    <tr><td>Cobro 30 días</td><td>${k.pctCobro30.toFixed(1)}%</td><td>${semaforo(k.pctCobro30,70,"min")}</td></tr>
+    <tr><td>PTP cumplidas</td><td>${k.pctPTP.toFixed(1)}%</td><td>${semaforo(k.pctPTP,85,"min")}</td></tr>
+    </table>`;
+
+    let cost = calcularCostToCollect();
+
+    costDashboard.innerHTML = `
+    <div>💰 Costo cobranza: $${cost.totalCost.toLocaleString()}</div>
+    <div>📊 Cost to Collect: ${cost.ratio.toFixed(1)}%</div>
+    `;
 }
 
-let k = calcularKPIs();
-
-kpis.innerHTML = `
-<table>
-<tr><th>KPI</th><th>Resultado</th><th>Estado</th></tr>
-
-<tr>
-<td>DSO</td>
-<td>${k.dso.toFixed(1)} días</td>
-<td>${semaforo(k.dso,45,"max")}</td>
-</tr>
-
-<tr>
-<td>% cartera 60+</td>
-<td>${k.pct60.toFixed(1)}%</td>
-<td>${semaforo(k.pct60,10,"max")}</td>
-</tr>
-
-<tr>
-<td>Cobro a 30 días</td>
-<td>${k.pctCobro30.toFixed(1)}%</td>
-<td>${semaforo(k.pctCobro30,70,"min")}</td>
-</tr>
-
-<tr>
-<td>PTP cumplidas</td>
-<td>${k.pctPTP.toFixed(1)}%</td>
-<td>${semaforo(k.pctPTP,85,"min")}</td>
-</tr>
-
-</table>
-`;
-
-let cost = calcularCostToCollect();
-
-costDashboard.innerHTML = `
-<div>💰 Costo cobranza: $${cost.totalCost.toLocaleString()}</div>
-<div>📊 Cost to Collect: ${cost.ratio.toFixed(1)}%</div>
-`;
-
-// ===== LOAD =====
 function cargar(){
 
     clienteSelect.innerHTML="";
@@ -398,22 +324,11 @@ function exportarCSV(){
         return;
     }
 
-    let headers = [
-        "Cliente",
-        "Score",
-        "Banda",
-        "CreditoSistema",
-        "CreditoOtorgado",
-        "Monto",
-        "Dias",
-        "FechaPromesa",
-        "EstadoPromesa"
-    ];
+    let headers = ["Cliente","Score","Banda","CreditoSistema","CreditoOtorgado","Monto","Dias","FechaPromesa","EstadoPromesa"];
 
     let csv = headers.join(",") + "\n";
 
     cuentas.forEach(c=>{
-
         let cliente = clientes.find(x=>x.id==c.cliente);
         let score = obtenerScore(c.cliente);
         let promesa = obtenerPromesa(c.id);
