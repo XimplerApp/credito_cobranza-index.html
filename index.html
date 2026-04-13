@@ -304,10 +304,20 @@ function render(){
 
     let cost = calcularCostToCollect();
 
-    costDashboard.innerHTML = `
-    <div>💰 Costo cobranza: $${cost.totalCost.toLocaleString('es-MX')}</div>
-    <div>📊 Cost to Collect: ${cost.ratio.toFixed(1)}%</div>
-    `;
+let veces = cost.ratio / 100;
+
+let mensaje = "";
+
+if(veces > 1){
+    mensaje = `🔴 Estás gastando $${veces.toFixed(1)} por cada $1 que cobras`;
+}else{
+    mensaje = `🟢 Estás gastando $${veces.toFixed(2)} por cada $1 que cobras`;
+}
+
+costDashboard.innerHTML = `
+<div>💰 Costo cobranza: $${cost.totalCost.toLocaleString('es-MX')}</div>
+<div>${mensaje}</div>
+`;
 }
 
 function cargar(){
