@@ -232,13 +232,20 @@ function semaforo(valor, meta, tipo){
 }
 
 function guardarCostos(){
+
+    function limpiar(valor){
+        return parseFloat((valor || "0").replace(/,/g,"")) || 0;
+    }
+
     costos = {
-        horas: +horas.value || 0,
-        viaticos: +viaticos.value || 0,
-        comunicacion: +comunicacion.value || 0,
-        admin: +admin.value || 0
+        horas: limpiar(horas.value),
+        viaticos: limpiar(viaticos.value),
+        comunicacion: limpiar(comunicacion.value),
+        admin: limpiar(admin.value)
     };
+
     localStorage.setItem("costos", JSON.stringify(costos));
+
     render();
 }
 
