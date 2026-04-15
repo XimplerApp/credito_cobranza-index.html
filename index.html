@@ -1,388 +1,1180 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<title>Crédito y Cobranza PRO</title>
+<meta charset="UTF-8">
+<title>Cartera & Crédito PRO — Dealer Semillas</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-body {font-family: Arial; background:#0f172a; color:white; padding:20px;}
-.card {background:#1e293b; padding:20px; border-radius:10px; margin-bottom:20px;}
-input, select {width:100%; padding:10px; margin:6px 0; border-radius:6px;}
-button {padding:6px 10px; border:none; border-radius:6px; cursor:pointer;}
-.save {background:#22c55e;}
-table {width:100%; text-align:center;}
-th, td {padding:10px; border-bottom:1px solid #334155;}
+  :root {
+    --bg:       #0a0f1e;
+    --surface:  #111827;
+    --card:     #162032;
+    --border:   #1f3050;
+    --accent:   #00d4aa;
+    --accent2:  #f59e0b;
+    --danger:   #ef4444;
+    --warn:     #f59e0b;
+    --good:     #22c55e;
+    --text:     #e2e8f0;
+    --muted:    #64748b;
+    --mono:     'DM Mono', monospace;
+    --sans:     'Inter', sans-serif;
+    --display:  'Syne', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* ── Layout ── */
+  .shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+  .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 28px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .sidebar-logo { padding: 0 20px 28px; border-bottom: 1px solid var(--border); }
+  .sidebar-logo h1 { font-family: var(--display); font-size: 1.1rem; color: var(--accent); line-height: 1.2; }
+  .sidebar-logo span { font-size: .7rem; color: var(--muted); font-family: var(--mono); }
+  nav a { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: var(--muted); text-decoration: none; font-size: .85rem; font-weight: 500; transition: all .2s; border-left: 3px solid transparent; }
+  nav a:hover, nav a.active { color: var(--text); background: rgba(0,212,170,.07); border-left-color: var(--accent); }
+  nav .nav-section { font-size: .65rem; font-family: var(--mono); color: var(--muted); padding: 16px 20px 6px; letter-spacing: .08em; text-transform: uppercase; }
+
+  .main { padding: 32px; overflow-x: hidden; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-title { font-family: var(--display); font-size: 1.7rem; margin-bottom: 6px; color: var(--text); }
+  .page-sub { color: var(--muted); font-size: .85rem; margin-bottom: 28px; }
+
+  /* ── Cards ── */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .card-title { font-family: var(--display); font-size: 1rem; margin-bottom: 16px; color: var(--accent); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+  /* ── Forms ── */
+  label { font-size: .78rem; color: var(--muted); display: block; margin-bottom: 4px; font-weight: 500; }
+  input, select, textarea { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: .88rem; font-family: var(--sans); transition: border-color .2s; }
+  input:focus, select:focus { outline: none; border-color: var(--accent); }
+  .field { margin-bottom: 14px; }
+  .field-inline { display: flex; gap: 8px; align-items: flex-end; }
+  .field-inline input { flex: 1; }
+
+  /* ── Buttons ── */
+  .btn { padding: 9px 18px; border: none; border-radius: 8px; cursor: pointer; font-size: .85rem; font-weight: 600; font-family: var(--sans); transition: all .2s; white-space: nowrap; }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #00b894; }
+  .btn-warn { background: var(--warn); color: #000; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-sm { padding: 5px 10px; font-size: .75rem; }
+
+  /* ── KPI tiles ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+  .kpi-label { font-size: .72rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; }
+  .kpi-val { font-family: var(--display); font-size: 1.8rem; margin: 6px 0 2px; }
+  .kpi-sub { font-size: .72rem; color: var(--muted); }
+  .kpi.green { border-left: 3px solid var(--good); }
+  .kpi.yellow { border-left: 3px solid var(--warn); }
+  .kpi.red { border-left: 3px solid var(--danger); }
+
+  /* ── Table ── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  th { background: var(--surface); color: var(--muted); font-size: .72rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,.02); }
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: .72rem; font-family: var(--mono); font-weight: 500; }
+  .badge-A { background: rgba(34,197,94,.15); color: var(--good); }
+  .badge-B { background: rgba(245,158,11,.15); color: var(--warn); }
+  .badge-C { background: rgba(239,68,68,.15); color: var(--danger); }
+  .badge-block { background: rgba(239,68,68,.2); color: var(--danger); }
+  .dias-cell { font-family: var(--mono); }
+  .dias-ok { color: var(--good); }
+  .dias-warn { color: var(--warn); }
+  .dias-bad { color: var(--danger); font-weight: 600; }
+
+  /* ── Score sliders ── */
+  .score-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .score-row label { min-width: 140px; font-size: .8rem; }
+  .score-row input[type=range] { flex: 1; accent-color: var(--accent); }
+  .score-row .score-num { font-family: var(--mono); min-width: 30px; text-align: right; color: var(--accent); font-size: .85rem; }
+  .score-total-box { background: var(--surface); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+  .score-total-num { font-family: var(--display); font-size: 2.5rem; }
+  .score-band { font-family: var(--mono); font-size: 1.1rem; padding: 4px 16px; border-radius: 8px; font-weight: 700; }
+
+  /* ── Progress bar ── */
+  .bar-wrap { background: var(--surface); border-radius: 4px; height: 6px; margin-top: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width .4s; }
+
+  /* ── Semáforo ── */
+  .sem-green { color: var(--good); }
+  .sem-yellow { color: var(--warn); }
+  .sem-red { color: var(--danger); }
+
+  /* ── Alert boxes ── */
+  .alert { border-radius: 10px; padding: 12px 16px; font-size: .83rem; margin-bottom: 12px; border-left: 3px solid; }
+  .alert-warn { background: rgba(245,158,11,.1); border-color: var(--warn); color: var(--warn); }
+  .alert-danger { background: rgba(239,68,68,.1); border-color: var(--danger); color: #fca5a5; }
+  .alert-good { background: rgba(34,197,94,.1); border-color: var(--good); color: #86efac; }
+
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); padding: 4px; border-radius: 10px; width: fit-content; }
+  .tab { padding: 7px 18px; border-radius: 8px; cursor: pointer; font-size: .82rem; font-weight: 500; color: var(--muted); transition: all .2s; }
+  .tab.active { background: var(--card); color: var(--text); }
+
+  /* ── Timeline promesas ── */
+  .ptp-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 10px; background: var(--surface); margin-bottom: 8px; }
+  .ptp-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .ptp-dot.ok { background: var(--good); }
+  .ptp-dot.venc { background: var(--danger); }
+  .ptp-dot.pend { background: var(--warn); }
+  .ptp-info { flex: 1; }
+  .ptp-nombre { font-size: .85rem; font-weight: 600; }
+  .ptp-fecha { font-size: .75rem; color: var(--muted); font-family: var(--mono); }
+  .ptp-monto { font-family: var(--mono); font-size: .85rem; color: var(--accent); }
+
+  /* ── Cost to collect ── */
+  .cost-ratio-big { font-family: var(--display); font-size: 3rem; }
+  .cost-label { font-size: .8rem; color: var(--muted); font-family: var(--mono); }
+
+  /* ── Reglas crédito visual ── */
+  .rule-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 10px; background: var(--surface); margin-bottom: 8px; border-left: 3px solid var(--border); }
+  .rule-item.active-rule { border-left-color: var(--accent); }
+
+  /* ── Toast ── */
+  #toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; font-size: .85rem; opacity: 0; transform: translateY(10px); transition: all .3s; pointer-events: none; z-index: 999; }
+  #toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ── Historial alertas ── */
+  .alert-row { font-size: .78rem; color: var(--danger); font-family: var(--mono); margin: 2px 0; }
+
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+  }
 </style>
 </head>
-
 <body>
 
-<h1>💳 Crédito y Cobranza PRO</h1>
+<div class="shell">
 
-<div class="card">
-<h2>Clientes</h2>
-<input id="clienteNombre" placeholder="Nombre">
-<button class="save" onclick="guardarCliente()">Guardar</button>
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>🌾 Cartera &amp;<br>Crédito PRO</h1>
+    <span>Dealer Semillas · México</span>
+  </div>
+  <nav>
+    <div class="nav-section">Principal</div>
+    <a href="#" class="active" onclick="nav('dashboard')">📊 Tablero</a>
+    <a href="#" onclick="nav('clientes')">👤 Clientes</a>
+    <a href="#" onclick="nav('scoring')">🎯 Scoring</a>
+    <div class="nav-section">Operación</div>
+    <a href="#" onclick="nav('cuentas')">📋 Cuentas</a>
+    <a href="#" onclick="nav('promesas')">🤝 Promesas de Pago</a>
+    <a href="#" onclick="nav('cobranza')">💰 Cobranza</a>
+    <div class="nav-section">Análisis</div>
+    <a href="#" onclick="nav('reglas')">📜 Reglas de Crédito</a>
+    <a href="#" onclick="nav('costos')">📉 Cost to Collect</a>
+    <a href="#" onclick="nav('exportar')">📤 Exportar</a>
+  </nav>
+</aside>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="main">
+
+<!-- ══ DASHBOARD ══ -->
+<div id="page-dashboard" class="page active">
+  <div class="page-title">Tablero Ejecutivo</div>
+  <div class="page-sub">Visión general de cartera en tiempo real</div>
+
+  <!-- Alertas críticas -->
+  <div id="alertas-criticas"></div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <!-- Distribución por banda -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Distribución de Cartera</div>
+      <div id="distribucion-tabla"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Antigüedad de Saldo</div>
+      <div id="aging-tabla"></div>
+    </div>
+  </div>
+
+  <!-- Tabla resumen -->
+  <div class="card">
+    <div class="card-title">Cartera Activa</div>
+    <div class="table-wrap"><table id="tabla-main"></table></div>
+  </div>
 </div>
 
-<div class="card">
-<h2>Scoring</h2>
-<select id="clienteScore"></select>
-<input id="antiguedad" placeholder="Antigüedad">
-<input id="referencias" placeholder="Referencias">
-<input id="historial" placeholder="Historial">
-<input id="ticket" placeholder="Ticket">
-<input id="riesgo" placeholder="Riesgo">
-<input id="garantias" placeholder="Garantías">
-<button class="save" onclick="guardarScore()">Calcular</button>
+<!-- ══ CLIENTES ══ -->
+<div id="page-clientes" class="page">
+  <div class="page-title">Gestión de Clientes</div>
+  <div class="page-sub">Registro y perfil de clientes con historial crediticio</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Nuevo Cliente</div>
+      <div class="field"><label>Nombre completo *</label><input id="cli-nombre" placeholder="Ej. Rancho San Miguel S.A. de C.V."></div>
+      <div class="field"><label>RFC</label><input id="cli-rfc" placeholder="XAXX010101000" maxlength="13"></div>
+      <div class="field"><label>Teléfono</label><input id="cli-tel" placeholder="+52 667 000 0000"></div>
+      <div class="field"><label>Municipio / Estado</label><input id="cli-lugar" placeholder="Culiacán, Sinaloa"></div>
+      <div class="field"><label>Cultivo principal</label><input id="cli-cultivo" placeholder="Ej. Maíz, Tomate, Frijol"></div>
+      <div class="field"><label>Hectáreas estimadas</label><input id="cli-ha" type="number" placeholder="0"></div>
+      <div class="field"><label>Observaciones</label><textarea id="cli-obs" rows="2" placeholder="Notas adicionales…"></textarea></div>
+      <button class="btn btn-primary" onclick="guardarCliente()">Guardar Cliente</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Lista de Clientes</div>
+      <div class="table-wrap"><table id="tabla-clientes"></table></div>
+    </div>
+  </div>
 </div>
 
-<div class="card">
-<h2>Nueva Cuenta</h2>
-<select id="clienteSelect"></select>
-<input id="monto" placeholder="Monto">
-<select id="credito">
-<option value="">Selecciona crédito</option>
-<option value="15">15 días</option>
-<option value="30">30 días</option>
-<option value="45">45 días</option>
-</select>
-<input type="date" id="fecha">
-<button class="save" onclick="guardarCuenta()">Registrar</button>
+<!-- ══ SCORING ══ -->
+<div id="page-scoring" class="page">
+  <div class="page-title">Scoring Crediticio</div>
+  <div class="page-sub">Evalúa a cada cliente con criterios ponderados del sector agrícola</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Calcular Score</div>
+      <div class="field"><label>Cliente</label>
+        <select id="score-cliente"></select>
+      </div>
+
+      <div id="criterios-scoring">
+        <!-- Criterio: Antigüedad -->
+        <div class="score-row">
+          <label>Antigüedad relación (años)</label>
+          <input type="range" id="sc-antiguedad" min="0" max="20" value="0" oninput="updScore(this,'sc-ant-num')">
+          <span class="score-num" id="sc-ant-num">0</span>
+        </div>
+        <div class="score-row">
+          <label>Referencias comerciales</label>
+          <input type="range" id="sc-referencias" min="0" max="20" value="0" oninput="updScore(this,'sc-ref-num')">
+          <span class="score-num" id="sc-ref-num">0</span>
+        </div>
+        <div class="score-row">
+          <label>Historial de pago interno</label>
+          <input type="range" id="sc-historial" min="0" max="25" value="0" oninput="updScore(this,'sc-his-num')">
+          <span class="score-num" id="sc-his-num">0</span>
+        </div>
+        <div class="score-row">
+          <label>Ticket promedio (volumen)</label>
+          <input type="range" id="sc-ticket" min="0" max="15" value="0" oninput="updScore(this,'sc-tck-num')">
+          <span class="score-num" id="sc-tck-num">0</span>
+        </div>
+        <div class="score-row">
+          <label>Perfil de riesgo general</label>
+          <input type="range" id="sc-riesgo" min="0" max="10" value="0" oninput="updScore(this,'sc-rie-num')">
+          <span class="score-num" id="sc-rie-num">0</span>
+        </div>
+        <div class="score-row">
+          <label>Garantías / Aval</label>
+          <input type="range" id="sc-garantias" min="0" max="10" value="0" oninput="updScore(this,'sc-gar-num')">
+          <span class="score-num" id="sc-gar-num">0</span>
+        </div>
+      </div>
+
+      <div class="score-total-box">
+        <div>
+          <div style="font-size:.75rem;color:var(--muted);font-family:var(--mono)">SCORE TOTAL</div>
+          <div class="score-total-num" id="sc-total-num">0</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:2px" id="sc-nivel-texto">—</div>
+        </div>
+        <div class="score-band" id="sc-band">—</div>
+      </div>
+      <div class="bar-wrap" style="margin-top:10px"><div class="bar-fill" id="sc-bar" style="width:0%;background:var(--muted)"></div></div>
+      <br>
+      <button class="btn btn-primary" onclick="guardarScore()">💾 Guardar Score</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Scores Registrados</div>
+      <div class="table-wrap"><table id="tabla-scores"></table></div>
+      <br>
+      <div class="alert alert-warn" style="font-size:.78rem">
+        ⚠️ Banda C = cliente bloqueado para nuevos créditos. Banda B = solo crédito de 15 días. Banda A = hasta 45 días según historial.
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="card">
-<h2>Promesa de Pago</h2>
-<select id="cuentaSelect"></select>
-<input type="date" id="fechaPromesa">
-<button class="save" onclick="guardarPromesa()">Guardar Promesa</button>
+<!-- ══ CUENTAS ══ -->
+<div id="page-cuentas" class="page">
+  <div class="page-title">Nueva Cuenta de Crédito</div>
+  <div class="page-sub">Registro de venta a crédito con validación automática de políticas</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Registrar Cuenta</div>
+      <div class="field"><label>Cliente *</label><select id="cta-cliente" onchange="validarCuentaCliente()"></select></div>
+      <div id="cta-validacion"></div>
+      <div class="field"><label>Monto ($MXN) *</label><input id="cta-monto" type="number" placeholder="0.00" min="0"></div>
+      <div class="field"><label>Folio / Factura</label><input id="cta-folio" placeholder="FAC-2024-0001"></div>
+      <div class="field"><label>Fecha de venta *</label><input type="date" id="cta-fecha"></div>
+      <div class="field"><label>Plazo de crédito *</label>
+        <select id="cta-credito">
+          <option value="">— Seleccionar plazo —</option>
+          <option value="15">15 días</option>
+          <option value="30">30 días</option>
+          <option value="45">45 días</option>
+          <option value="60">60 días (solo con aprobación gerencia)</option>
+        </select>
+      </div>
+      <div class="field"><label>Producto / Semilla</label><input id="cta-producto" placeholder="Ej. Maíz Híbrido NK-212"></div>
+      <div class="field"><label>Ciclo agrícola</label>
+        <select id="cta-ciclo">
+          <option value="">— Ciclo —</option>
+          <option value="PV">Primavera-Verano</option>
+          <option value="OI">Otoño-Invierno</option>
+          <option value="Riego">Riego</option>
+          <option value="Temporal">Temporal</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="guardarCuenta()">Registrar Cuenta</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Cuentas por Cobrar</div>
+      <div class="table-wrap"><table id="tabla-cuentas"></table></div>
+    </div>
+  </div>
 </div>
 
-<div class="card">
-<h2>💰 Cost to Collect</h2>
-<input id="horas" placeholder="Costo horas personal">
-<input id="viaticos" placeholder="Viáticos">
-<input id="comunicacion" placeholder="Comunicaciones">
-<input id="admin" placeholder="Administrativos">
-<button class="save" onclick="guardarCostos()">Guardar Costos</button>
-<div id="costDashboard"></div>
+<!-- ══ PROMESAS ══ -->
+<div id="page-promesas" class="page">
+  <div class="page-title">Promesas de Pago</div>
+  <div class="page-sub">Registro y seguimiento de acuerdos de pago</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Nueva Promesa</div>
+      <div class="field"><label>Cuenta</label><select id="ptp-cuenta"></select></div>
+      <div class="field"><label>Monto comprometido ($)</label><input id="ptp-monto" type="number" placeholder="0.00"></div>
+      <div class="field"><label>Fecha de pago comprometida *</label><input type="date" id="ptp-fecha"></div>
+      <div class="field"><label>Canal de contacto</label>
+        <select id="ptp-canal">
+          <option value="Llamada">Llamada telefónica</option>
+          <option value="Visita">Visita en campo</option>
+          <option value="WhatsApp">WhatsApp</option>
+          <option value="Email">Email</option>
+        </select>
+      </div>
+      <div class="field"><label>Notas del gestor</label><textarea id="ptp-notas" rows="2" placeholder="Contexto de la negociación…"></textarea></div>
+      <button class="btn btn-primary" onclick="guardarPromesa()">Registrar Promesa</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Estado de Promesas</div>
+      <div id="lista-promesas"></div>
+    </div>
+  </div>
 </div>
 
-<div class="card">
-<h2>📊 Tablero Ejecutivo de Cartera</h2>
-<div id="kpis"></div>
+<!-- ══ COBRANZA ══ -->
+<div id="page-cobranza" class="page">
+  <div class="page-title">Gestión de Cobranza</div>
+  <div class="page-sub">Registra pagos y acciones de cobranza por cuenta</div>
+
+  <div class="card">
+    <div class="card-title">Registrar Pago</div>
+    <div class="grid-3">
+      <div class="field"><label>Cuenta</label><select id="pago-cuenta"></select></div>
+      <div class="field"><label>Monto pagado ($MXN)</label><input id="pago-monto" type="number" placeholder="0.00"></div>
+      <div class="field"><label>Forma de pago</label>
+        <select id="pago-forma">
+          <option value="Transferencia">Transferencia</option>
+          <option value="Cheque">Cheque</option>
+          <option value="Efectivo">Efectivo</option>
+          <option value="Depósito">Depósito bancario</option>
+        </select>
+      </div>
+      <div class="field"><label>Fecha de pago</label><input type="date" id="pago-fecha"></div>
+      <div class="field"><label>Referencia bancaria</label><input id="pago-ref" placeholder="REF-001"></div>
+      <div class="field"><label>Notas</label><input id="pago-notas" placeholder="Observaciones del pago"></div>
+    </div>
+    <button class="btn btn-primary" onclick="registrarPago()">✅ Registrar Pago</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Historial de Pagos</div>
+    <div class="table-wrap"><table id="tabla-pagos"></table></div>
+  </div>
 </div>
 
-<div class="card">
-<button class="save" onclick="exportarCSV()">📊 Exportar CSV</button>
-<table id="tabla"></table>
+<!-- ══ REGLAS DE CRÉDITO ══ -->
+<div id="page-reglas" class="page">
+  <div class="page-title">Política de Crédito</div>
+  <div class="page-sub">Reglas automáticas de otorgamiento — Motor de decisión integrado</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Reglas de Otorgamiento</div>
+      <div class="rule-item active-rule">
+        <div>
+          <div style="font-weight:600;font-size:.88rem">🟢 Score ≥ 80 (Banda A)</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Crédito máximo 45 días. Sin restricciones si no tiene vencidos &gt;60 días. Límite hasta 3× ticket promedio histórico.</div>
+        </div>
+      </div>
+      <div class="rule-item active-rule">
+        <div>
+          <div style="font-weight:600;font-size:.88rem">🟡 Score 60–79 (Banda B)</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Crédito máximo 30 días. Requiere al menos 2 pagos previos a tiempo. Límite hasta 1.5× ticket promedio histórico.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div>
+          <div style="font-weight:600;font-size:.88rem">🔴 Score &lt; 60 (Banda C)</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Crédito BLOQUEADO. Solo contado o requiere aval y aprobación gerencia. No se emiten facturas a crédito.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div>
+          <div style="font-weight:600;font-size:.88rem">⛔ Cartera vencida &gt;60 días</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Bloqueo automático independiente del score. No se activa nuevo crédito hasta regularización total.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div>
+          <div style="font-weight:600;font-size:.88rem">📅 Estacionalidad agrícola</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Plazos extendidos en temporada de cosecha (Oct–Dic / Abr–Jun) con autorización del gerente regional.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Simulador de Crédito</div>
+      <div class="field"><label>Selecciona cliente</label><select id="sim-cliente" onchange="simularCredito()"></select></div>
+      <div class="field"><label>Monto solicitado ($)</label><input id="sim-monto" type="number" placeholder="0" oninput="simularCredito()"></div>
+      <div id="sim-resultado"></div>
+    </div>
+  </div>
 </div>
 
+<!-- ══ COST TO COLLECT ══ -->
+<div id="page-costos" class="page">
+  <div class="page-title">Cost to Collect</div>
+  <div class="page-sub">Eficiencia del área de cobranza vs recuperación real</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Costos del Período</div>
+      <div class="field"><label>Costo horas de personal ($MXN)</label><input id="cost-horas" type="number" placeholder="0.00" oninput="calcCostos()"></div>
+      <div class="field"><label>Viáticos y transporte ($MXN)</label><input id="cost-viaticos" type="number" placeholder="0.00" oninput="calcCostos()"></div>
+      <div class="field"><label>Comunicaciones ($MXN)</label><input id="cost-comunicacion" type="number" placeholder="0.00" oninput="calcCostos()"></div>
+      <div class="field"><label>Gastos administrativos ($MXN)</label><input id="cost-admin" type="number" placeholder="0.00" oninput="calcCostos()"></div>
+      <button class="btn btn-primary" onclick="guardarCostos()">Guardar Costos</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Indicador Cost to Collect</div>
+      <div id="cost-dashboard"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXPORTAR ══ -->
+<div id="page-exportar" class="page">
+  <div class="page-title">Exportar Datos</div>
+  <div class="page-sub">Genera reportes en CSV para análisis externo</div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">📋 Cartera Completa</div>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Todas las cuentas con score, plazo, días, promesas y estado de pago.</p>
+      <button class="btn btn-primary" onclick="exportarCSV('cartera')">Exportar Cartera.csv</button>
+    </div>
+    <div class="card">
+      <div class="card-title">🔴 Vencida &gt;60 días</div>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Solo cuentas en cartera vencida para gestión urgente de cobranza.</p>
+      <button class="btn btn-danger" onclick="exportarCSV('vencida')">Exportar Vencida.csv</button>
+    </div>
+    <div class="card">
+      <div class="card-title">🤝 Promesas de Pago</div>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Reporte de promesas de pago con cumplimiento y monto comprometido.</p>
+      <button class="btn btn-warn" onclick="exportarCSV('promesas')">Exportar Promesas.csv</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <script>
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  ESTADO — persistencia en localStorage                          ║
+// ╚══════════════════════════════════════════════════════════════════╝
+let clientes  = parse('clientes',  []);
+let cuentas   = parse('cuentas',   []);
+let scores    = parse('scores',    []);
+let promesas  = parse('promesas',  []);
+let pagos     = parse('pagos',     []);
+let costos    = parse('costos',    {horas:0,viaticos:0,comunicacion:0,admin:0});
 
-let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
-let cuentas = JSON.parse(localStorage.getItem("cuentas")) || [];
-let scores = JSON.parse(localStorage.getItem("scores")) || [];
-let promesas = JSON.parse(localStorage.getItem("promesas")) || [];
-let pagos = JSON.parse(localStorage.getItem("pagos")) || [];
-let costos = JSON.parse(localStorage.getItem("costos")) || {};
+function parse(k, def){ try{ return JSON.parse(localStorage.getItem(k)) || def; }catch{ return def; } }
+function save(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
 
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  NAV                                                             ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function nav(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('nav a').forEach(a=>{
+    if(a.getAttribute('onclick')&&a.getAttribute('onclick').includes(page)) a.classList.add('active');
+  });
+  renderPage(page);
+}
+
+function renderPage(p){
+  if(p==='dashboard')   renderDashboard();
+  if(p==='clientes')    renderClientes();
+  if(p==='scoring')     renderScoring();
+  if(p==='cuentas')     renderCuentas();
+  if(p==='promesas')    renderPromesas();
+  if(p==='cobranza')    renderCobranza();
+  if(p==='reglas')      renderReglas();
+  if(p==='costos')      renderCostos();
+}
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  UTILIDADES                                                      ║
+// ╚══════════════════════════════════════════════════════════════════╝
 function dias(fecha){
-    return Math.floor((new Date() - new Date(fecha))/(1000*60*60*24));
+  if(!fecha) return 0;
+  return Math.floor((Date.now() - new Date(fecha).getTime()) / 86400000);
 }
+function diasHastaVencer(fechaVenta, plazo){
+  const vence = new Date(fechaVenta);
+  vence.setDate(vence.getDate() + parseInt(plazo||30));
+  return Math.floor((vence.getTime() - Date.now()) / 86400000);
+}
+function fmt(n){ return Number(n||0).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+function today(){ return new Date().toISOString().split('T')[0]; }
 
-function guardarCliente(){
-    clientes.push({id:Date.now(), nombre:clienteNombre.value});
-    localStorage.setItem("clientes", JSON.stringify(clientes));
-    cargar();
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  SCORE                                                           ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function updScore(el, numId){
+  document.getElementById(numId).textContent = el.value;
+  recalcScore();
 }
+function recalcScore(){
+  const total = +sc('sc-antiguedad') + +sc('sc-referencias') + +sc('sc-historial') +
+                +sc('sc-ticket') + +sc('sc-riesgo') + +sc('sc-garantias');
+  document.getElementById('sc-total-num').textContent = total;
+  let banda = total>=80?'A':total>=60?'B':'C';
+  const bandEl = document.getElementById('sc-band');
+  bandEl.textContent = 'Banda '+banda;
+  bandEl.className = 'score-band badge-'+banda;
+  const bar = document.getElementById('sc-bar');
+  bar.style.width = total+'%';
+  bar.style.background = total>=80?'var(--good)':total>=60?'var(--warn)':'var(--danger)';
+  const nivelTextos = {A:'Excelente — hasta 45 días',B:'Moderado — hasta 30 días',C:'Alto riesgo — BLOQUEADO'};
+  document.getElementById('sc-nivel-texto').textContent = nivelTextos[banda];
+}
+function sc(id){ const el=document.getElementById(id); return el?el.value:0; }
 
 function guardarScore(){
-    let total = +antiguedad.value + +referencias.value + +historial.value +
-                +ticket.value + +riesgo.value + +garantias.value;
-
-    let banda = total>=80?"A":total>=60?"B":"C";
-
-    let existente = scores.find(s=>s.cliente==clienteScore.value);
-
-    if(existente){
-        existente.total=total;
-        existente.banda=banda;
-    }else{
-        scores.push({cliente:clienteScore.value,total,banda});
-    }
-
-    localStorage.setItem("scores", JSON.stringify(scores));
-    render();
+  const clienteId = document.getElementById('score-cliente').value;
+  if(!clienteId){ toast('⚠️ Selecciona un cliente'); return; }
+  const total = +sc('sc-antiguedad') + +sc('sc-referencias') + +sc('sc-historial') +
+                +sc('sc-ticket') + +sc('sc-riesgo') + +sc('sc-garantias');
+  const banda = total>=80?'A':total>=60?'B':'C';
+  const idx = scores.findIndex(s=>s.cliente==clienteId);
+  const scoreObj = { cliente:clienteId, total, banda, fecha:today() };
+  if(idx>=0) scores[idx]=scoreObj; else scores.push(scoreObj);
+  save('scores',scores);
+  toast('✅ Score guardado — Banda '+banda);
+  renderScoring();
 }
 
-function obtenerScore(id){
-    return scores.find(s=>s.cliente==id);
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  NIVEL DE CRÉDITO — Motor de decisión                           ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function nivelCredito(clienteId){
+  const score = scores.find(s=>s.cliente==clienteId);
+  const pagosCliente = pagos.filter(p=>p.cliente==clienteId);
+  // Bloqueo por vencida >60 días
+  const tieneVencida = cuentas.some(c=>c.cliente==clienteId && !estaLiquidada(c.id) && diasHastaVencer(c.fecha,c.credito)<-0);
+  const diasMax = cuentas.filter(c=>c.cliente==clienteId && !estaLiquidada(c.id))
+                         .reduce((mx,c)=> Math.max(mx, -diasHastaVencer(c.fecha,c.credito)), 0);
+  if(diasMax>60) return {dias:0, motivo:'Cartera vencida >60 días'};
+  if(!score) return {dias:15, motivo:'Sin score — mínimo por default'};
+  if(score.banda==='C') return {dias:0, motivo:'Banda C — cliente bloqueado'};
+  if(score.banda==='A' && score.total>=80) return {dias:45, motivo:'Banda A — máximo habilitado'};
+  if(pagosCliente.length>=2) return {dias:30, motivo:'Banda B con historial positivo'};
+  return {dias:15, motivo:'Banda B — inicio de relación'};
 }
 
-function nivelCredito(id){
-    let score = obtenerScore(id);
-    let pagosCliente = pagos.filter(p=>p.cliente==id).length;
-    let vencido = cuentas.some(c=>c.cliente==id && dias(c.fecha)>60);
-
-    if(vencido) return 0;
-    if(score && score.banda==="C") return 0;
-    if(score && score.total>=80) return 45;
-    if(pagosCliente>=2) return 30;
-
-    return 15;
+function estaLiquidada(cuentaId){
+  return pagos.some(p=>p.cuenta==cuentaId && p.liquidado);
 }
 
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  CLIENTES                                                        ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function guardarCliente(){
+  const nombre = document.getElementById('cli-nombre').value.trim();
+  if(!nombre){ toast('⚠️ El nombre es obligatorio'); return; }
+  const c = {
+    id: Date.now(),
+    nombre,
+    rfc:     document.getElementById('cli-rfc').value.trim(),
+    tel:     document.getElementById('cli-tel').value.trim(),
+    lugar:   document.getElementById('cli-lugar').value.trim(),
+    cultivo: document.getElementById('cli-cultivo').value.trim(),
+    ha:      document.getElementById('cli-ha').value,
+    obs:     document.getElementById('cli-obs').value.trim(),
+    creado:  today()
+  };
+  clientes.push(c);
+  save('clientes',clientes);
+  // limpiar
+  ['cli-nombre','cli-rfc','cli-tel','cli-lugar','cli-cultivo','cli-ha','cli-obs'].forEach(id=>{ document.getElementById(id).value=''; });
+  toast('✅ Cliente registrado');
+  renderClientes();
+}
+
+function eliminarCliente(id){
+  if(!confirm('¿Eliminar este cliente?')) return;
+  clientes = clientes.filter(c=>c.id!=id);
+  save('clientes',clientes);
+  renderClientes();
+}
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  CUENTAS                                                         ║
+// ╚══════════════════════════════════════════════════════════════════╝
 function guardarCuenta(){
-    let creditoElegido = parseInt(credito.value);
-    if(!creditoElegido){
-        alert("Selecciona crédito");
-        return;
-    }
+  const clienteId = document.getElementById('cta-cliente').value;
+  const monto = parseFloat(document.getElementById('cta-monto').value);
+  const fecha = document.getElementById('cta-fecha').value;
+  const credito = parseInt(document.getElementById('cta-credito').value);
+  if(!clienteId||!monto||!fecha||!credito){ toast('⚠️ Completa todos los campos obligatorios'); return; }
+  if(monto<=0){ toast('⚠️ El monto debe ser mayor a cero'); return; }
 
-    cuentas.push({
-        id: Date.now(),
-        cliente: clienteSelect.value,
-        monto: +monto.value,
-        fecha: fecha.value,
-        credito: creditoElegido
-    });
+  // Validar política
+  const nivel = nivelCredito(clienteId);
+  if(nivel.dias===0){ toast('🚫 '+nivel.motivo+' — crédito bloqueado'); return; }
+  if(credito>nivel.dias){
+    if(!confirm(`⚠️ El sistema recomienda máximo ${nivel.dias} días para este cliente. ¿Deseas continuar con ${credito} días? (requiere aprobación gerencia)`)) return;
+  }
 
-    localStorage.setItem("cuentas", JSON.stringify(cuentas));
-    render();
+  const cuenta = {
+    id: Date.now(),
+    cliente: clienteId,
+    monto,
+    fecha,
+    credito,
+    folio:    document.getElementById('cta-folio').value.trim(),
+    producto: document.getElementById('cta-producto').value.trim(),
+    ciclo:    document.getElementById('cta-ciclo').value
+  };
+  cuentas.push(cuenta);
+  save('cuentas',cuentas);
+  ['cta-monto','cta-folio','cta-producto'].forEach(id=>{ document.getElementById(id).value=''; });
+  toast('✅ Cuenta registrada');
+  renderCuentas();
 }
 
+function validarCuentaCliente(){
+  const id = document.getElementById('cta-cliente').value;
+  if(!id) return;
+  const nivel = nivelCredito(id);
+  const div = document.getElementById('cta-validacion');
+  if(nivel.dias===0){
+    div.innerHTML = `<div class="alert alert-danger">🚫 ${nivel.motivo} — No se puede otorgar crédito</div>`;
+  } else {
+    div.innerHTML = `<div class="alert alert-good">✅ Crédito habilitado hasta <strong>${nivel.dias} días</strong> — ${nivel.motivo}</div>`;
+  }
+}
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  PROMESAS DE PAGO                                                ║
+// ╚══════════════════════════════════════════════════════════════════╝
 function guardarPromesa(){
-    promesas.push({
-        cuenta: cuentaSelect.value,
-        fecha: fechaPromesa.value,
-        cumplido:false
-    });
+  const cuentaId = document.getElementById('ptp-cuenta').value;
+  const fecha = document.getElementById('ptp-fecha').value;
+  if(!cuentaId||!fecha){ toast('⚠️ Selecciona cuenta y fecha'); return; }
+  // Verificar si ya tiene promesa activa
+  const existente = promesas.find(p=>p.cuenta==cuentaId && !p.cumplido);
+  if(existente && !confirm('Ya existe una promesa activa para esta cuenta. ¿Reemplazar?')) return;
+  if(existente){ promesas = promesas.filter(p=>!(p.cuenta==cuentaId && !p.cumplido)); }
 
-    localStorage.setItem("promesas", JSON.stringify(promesas));
-    render();
-}
-
-function obtenerPromesa(id){
-    return promesas.find(p=>p.cuenta==id);
+  const cuenta = cuentas.find(c=>c.id==cuentaId);
+  promesas.push({
+    id: Date.now(),
+    cuenta: cuentaId,
+    cliente: cuenta?.cliente,
+    montoComprometido: parseFloat(document.getElementById('ptp-monto').value)||0,
+    fecha,
+    canal: document.getElementById('ptp-canal').value,
+    notas: document.getElementById('ptp-notas').value.trim(),
+    cumplido: false,
+    creado: today()
+  });
+  save('promesas',promesas);
+  toast('✅ Promesa registrada');
+  renderPromesas();
 }
 
 function cumplirPromesa(id){
-    let p = promesas.find(x=>x.cuenta==id);
-    if(p){
-        p.cumplido=true;
-
-       pagos.push({
-    cuenta: id, // 🔥 CLAVE
-    cliente: cuentas.find(c=>c.id==id).cliente,
-    fecha: new Date().toISOString()
-});
-
-        localStorage.setItem("pagos", JSON.stringify(pagos));
-        localStorage.setItem("promesas", JSON.stringify(promesas));
-
-        render();
-    }
+  const p = promesas.find(x=>x.id==id||x.cuenta==id);
+  if(!p) return;
+  p.cumplido = true;
+  p.fechaCumplido = today();
+  save('promesas',promesas);
+  toast('✅ Promesa marcada como cumplida');
+  renderPromesas();
+  renderDashboard();
 }
 
-function estadoPromesa(p, id){
-    if(!p) return "—";
-    if(p.cumplido) return "✅ Cumplida";
-
-    if(new Date()>new Date(p.fecha)){
-        return `🔴 Vencida <br><button onclick="cumplirPromesa(${id})">✔</button>`;
-    }
-
-    return `🟡 Pendiente <br><button onclick="cumplirPromesa(${id})">✔</button>`;
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  PAGOS                                                           ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function registrarPago(){
+  const cuentaId = document.getElementById('pago-cuenta').value;
+  const monto = parseFloat(document.getElementById('pago-monto').value);
+  const fecha = document.getElementById('pago-fecha').value || today();
+  if(!cuentaId||!monto){ toast('⚠️ Selecciona cuenta e ingresa el monto'); return; }
+  const cuenta = cuentas.find(c=>c.id==cuentaId);
+  if(!cuenta){ toast('Cuenta no encontrada'); return; }
+  const pago = {
+    id: Date.now(),
+    cuenta: cuentaId,
+    cliente: cuenta.cliente,
+    monto,
+    fecha,
+    forma: document.getElementById('pago-forma').value,
+    ref: document.getElementById('pago-ref').value.trim(),
+    notas: document.getElementById('pago-notas').value.trim()
+  };
+  // Liquidar si el pago cubre el monto total
+  const totalPagado = pagos.filter(p=>p.cuenta==cuentaId).reduce((a,b)=>a+b.monto,0) + monto;
+  if(totalPagado >= cuenta.monto){
+    pago.liquidado = true;
+    // Marcar promesas como cumplidas
+    promesas.filter(p=>p.cuenta==cuentaId && !p.cumplido).forEach(p=>{ p.cumplido=true; p.fechaCumplido=today(); });
+    save('promesas',promesas);
+    toast(`✅ Cuenta LIQUIDADA — $${fmt(totalPagado)} pagados`);
+  } else {
+    toast(`✅ Pago parcial registrado — Resta $${fmt(cuenta.monto-totalPagado)}`);
+  }
+  pagos.push(pago);
+  save('pagos',pagos);
+  ['pago-monto','pago-ref','pago-notas'].forEach(id=>{ document.getElementById(id).value=''; });
+  renderCobranza();
+  renderDashboard();
 }
 
-function calcularKPIs(){
-    let total = cuentas.reduce((a,b)=>a+b.monto,0);
-
-    let dso = cuentas.length ?
-        cuentas.reduce((a,b)=>a+Math.max(0,dias(b.fecha)),0)/cuentas.length : 0;
-
-    let cartera60 = cuentas.filter(c=>dias(c.fecha)>60)
-                           .reduce((a,b)=>a+b.monto,0);
-
-    let pct60 = total ? (cartera60/total)*100 : 0;
-
-    let cobro30 = cuentas.filter(c=>dias(c.fecha)<=30).length;
-    let pctCobro30 = cuentas.length ? (cobro30/cuentas.length)*100 : 0;
-
-    let promesasTot = promesas.length;
-    let cumplidas = promesas.filter(p=>p.cumplido).length;
-    let pctPTP = promesasTot ? (cumplidas/promesasTot)*100 : 0;
-
-    return {dso,pct60,pctCobro30,pctPTP};
-}
-
-function semaforo(valor, meta, tipo){
-    if(tipo==="max"){
-        if(valor <= meta) return "🟢";
-        if(valor <= meta*1.2) return "🟡";
-        return "🔴";
-    }
-    if(tipo==="min"){
-        if(valor >= meta) return "🟢";
-        if(valor >= meta*0.8) return "🟡";
-        return "🔴";
-    }
-}
-
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  COSTOS                                                          ║
+// ╚══════════════════════════════════════════════════════════════════╝
 function guardarCostos(){
-
-    function limpiar(valor){
-        return parseFloat((valor || "0").replace(/,/g,"")) || 0;
-    }
-
-    costos = {
-        horas: limpiar(horas.value),
-        viaticos: limpiar(viaticos.value),
-        comunicacion: limpiar(comunicacion.value),
-        admin: limpiar(admin.value)
-    };
-
-    localStorage.setItem("costos", JSON.stringify(costos));
-
-    render();
+  costos = {
+    horas:        parseFloat(document.getElementById('cost-horas').value)||0,
+    viaticos:     parseFloat(document.getElementById('cost-viaticos').value)||0,
+    comunicacion: parseFloat(document.getElementById('cost-comunicacion').value)||0,
+    admin:        parseFloat(document.getElementById('cost-admin').value)||0
+  };
+  save('costos',costos);
+  toast('✅ Costos guardados');
+  renderCostos();
 }
+function calcCostos(){ renderCostos(); }
 
 function calcularCostToCollect(){
-    let totalCost = (costos.horas||0)+(costos.viaticos||0)+(costos.comunicacion||0)+(costos.admin||0);
-    let recuperado = pagos.length
-    ? pagos.reduce((total, p) => {
-        let cuenta = cuentas.find(c=>c.id == p.cuenta);
-        return total + (cuenta?.monto || 0);
-      }, 0)
+  const totalCost = (costos.horas||0)+(costos.viaticos||0)+(costos.comunicacion||0)+(costos.admin||0);
+  const recuperado = pagos.reduce((t,p)=>t+(p.monto||0),0);
+  const ratio = recuperado>0 ? (totalCost/recuperado)*100 : 0;
+  return {totalCost, recuperado, ratio};
+}
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  KPIs                                                            ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function calcularKPIs(){
+  const activas = cuentas.filter(c=>!estaLiquidada(c.id));
+  const total = activas.reduce((a,b)=>a+b.monto,0);
+
+  // DSO: Promedio ponderado de días desde venta
+  const dso = activas.length
+    ? activas.reduce((a,b)=>a+Math.max(0,dias(b.fecha)),0)/activas.length
     : 0;
-    let ratio = recuperado ? (totalCost / recuperado)*100 : 0;
-    return {totalCost,ratio};
+
+  // % cartera vencida >60 días (después de plazo)
+  const vencida60 = activas.filter(c=>diasHastaVencer(c.fecha,c.credito)<-60).reduce((a,b)=>a+b.monto,0);
+  const pct60 = total ? (vencida60/total)*100 : 0;
+
+  // % cobrado en plazo (promesas cumplidas / total promesas)
+  const ptpTot = promesas.length;
+  const ptpCump = promesas.filter(p=>p.cumplido).length;
+  const pctPTP = ptpTot ? (ptpCump/ptpTot)*100 : 0;
+
+  // Efectividad de cobranza en plazo
+  const cobradas = cuentas.filter(c=>estaLiquidada(c.id)).length;
+  const pctCobro = cuentas.length ? (cobradas/cuentas.length)*100 : 0;
+
+  return {dso, pct60, pctPTP, pctCobro, total, vencida60};
 }
 
-function render(){
+function semaforo(v, meta, tipo){
+  if(tipo==='max') return v<=meta?'sem-green':v<=meta*1.2?'sem-yellow':'sem-red';
+  return v>=meta?'sem-green':v>=meta*0.8?'sem-yellow':'sem-red';
+}
+function semaforoIcon(cls){ return cls==='sem-green'?'🟢':cls==='sem-yellow'?'🟡':'🔴'; }
 
-    tabla.innerHTML=`
-    <tr>
-    <th>Cliente</th>
-    <th>Score</th>
-    <th>Crédito Sistema</th>
-    <th>Crédito Otorgado</th>
-    <th>Monto</th>
-    <th>Días</th>
-    <th>Promesa</th>
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  RENDER DASHBOARD                                                ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function renderDashboard(){
+  const k = calcularKPIs();
+  const dsoC = semaforo(k.dso,45,'max');
+  const p60C = semaforo(k.pct60,10,'max');
+  const ptpC = semaforo(k.pctPTP,85,'min');
+  const cobC = semaforo(k.pctCobro,70,'min');
+
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi ${dsoC.replace('sem-','').replace('green','green').replace('yellow','yellow').replace('red','red')}">
+      <div class="kpi-label">DSO — Días promedio</div>
+      <div class="kpi-val ${dsoC}">${k.dso.toFixed(1)}</div>
+      <div class="kpi-sub">${semaforoIcon(dsoC)} Meta: ≤45 días</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Cartera Activa Total</div>
+      <div class="kpi-val" style="color:var(--accent)">$${(k.total/1000).toFixed(0)}K</div>
+      <div class="kpi-sub">Vencida: $${(k.vencida60/1000).toFixed(0)}K</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">% Cartera Vencida +60d</div>
+      <div class="kpi-val ${p60C}">${k.pct60.toFixed(1)}%</div>
+      <div class="kpi-sub">${semaforoIcon(p60C)} Meta: ≤10%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">PTP Cumplidas</div>
+      <div class="kpi-val ${ptpC}">${k.pctPTP.toFixed(1)}%</div>
+      <div class="kpi-sub">${semaforoIcon(ptpC)} Meta: ≥85%</div>
+    </div>`;
+
+  // Alertas críticas
+  const alertas = [];
+  cuentas.filter(c=>!estaLiquidada(c.id)).forEach(c=>{
+    const dv = -diasHastaVencer(c.fecha,c.credito);
+    const cli = clientes.find(x=>x.id==c.cliente);
+    if(dv>60) alertas.push(`<div class="alert alert-danger">⛔ <strong>${cli?.nombre||'?'}</strong> — $${fmt(c.monto)} vencido hace ${dv} días (>${c.credito+60} días)</div>`);
+    else if(dv>0) alertas.push(`<div class="alert alert-warn">⚠️ <strong>${cli?.nombre||'?'}</strong> — $${fmt(c.monto)} vencido hace ${dv} días</div>`);
+  });
+  document.getElementById('alertas-criticas').innerHTML = alertas.slice(0,5).join('');
+
+  // Distribución por banda
+  const bandas = {A:{cnt:0,monto:0},B:{cnt:0,monto:0},C:{cnt:0,monto:0},Sin:{cnt:0,monto:0}};
+  cuentas.filter(c=>!estaLiquidada(c.id)).forEach(c=>{
+    const sc = scores.find(s=>s.cliente==c.cliente);
+    const b = sc?sc.banda:'Sin';
+    bandas[b].cnt++; bandas[b].monto+=c.monto;
+  });
+  const distHtml = `<table><tr><th>Banda</th><th>Cuentas</th><th>Monto</th></tr>
+    ${['A','B','C','Sin'].map(b=>`<tr><td><span class="badge badge-${b}">${b==='Sin'?'Sin score':b}</span></td><td>${bandas[b].cnt}</td><td>$${fmt(bandas[b].monto)}</td></tr>`).join('')}
+  </table>`;
+  document.getElementById('distribucion-tabla').innerHTML = distHtml;
+
+  // Aging de saldo
+  const aging = [{label:'Al corriente',monto:0},{label:'1–30d vencido',monto:0},{label:'31–60d vencido',monto:0},{label:'>60d vencido',monto:0}];
+  cuentas.filter(c=>!estaLiquidada(c.id)).forEach(c=>{
+    const dv = -diasHastaVencer(c.fecha,c.credito);
+    if(dv<=0) aging[0].monto+=c.monto;
+    else if(dv<=30) aging[1].monto+=c.monto;
+    else if(dv<=60) aging[2].monto+=c.monto;
+    else aging[3].monto+=c.monto;
+  });
+  const totalAging = aging.reduce((a,b)=>a+b.monto,0)||1;
+  const agingHtml = aging.map((a,i)=>{
+    const pct=(a.monto/totalAging*100).toFixed(1);
+    const col=i===0?'var(--good)':i===1?'var(--accent2)':i===2?'var(--warn)':'var(--danger)';
+    return `<div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;font-size:.8rem"><span>${a.label}</span><span style="font-family:var(--mono);color:${col}">$${fmt(a.monto)}</span></div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${col}"></div></div>
+    </div>`;
+  }).join('');
+  document.getElementById('aging-tabla').innerHTML = agingHtml;
+
+  // Tabla principal
+  let html = `<tr><th>Cliente</th><th>Folio</th><th>Score</th><th>Plazo</th><th>Monto</th><th>Vence en</th><th>Promesa</th><th>Estado</th></tr>`;
+  cuentas.filter(c=>!estaLiquidada(c.id)).forEach(c=>{
+    const cli = clientes.find(x=>x.id==c.cliente);
+    const sc  = scores.find(s=>s.cliente==c.cliente);
+    const dv  = diasHastaVencer(c.fecha,c.credito);
+    const dvClass = dv>5?'dias-ok':dv>0?'dias-warn':'dias-bad';
+    const ptp = promesas.find(p=>p.cuenta==c.id&&!p.cumplido);
+    const ptpHtml = ptp?`🤝 ${ptp.fecha}`:diasHastaVencer(c.fecha,c.credito)<0?'<span style="color:var(--danger)">Sin promesa</span>':'—';
+    const estado = dv<0?`<span class="badge badge-C">Vencida ${-dv}d</span>`:`<span class="badge badge-A">Al corriente</span>`;
+    html+=`<tr>
+      <td>${cli?.nombre||'?'}</td>
+      <td style="font-family:var(--mono);font-size:.75rem">${c.folio||'—'}</td>
+      <td>${sc?`<span class="badge badge-${sc.banda}">${sc.total} / ${sc.banda}</span>`:'—'}</td>
+      <td style="font-family:var(--mono)">${c.credito}d</td>
+      <td style="font-family:var(--mono)">$${fmt(c.monto)}</td>
+      <td class="dias-cell ${dvClass}">${dv<0?dv+'d VENCIDA':dv+'d'}</td>
+      <td style="font-size:.78rem">${ptpHtml}</td>
+      <td>${estado}</td>
     </tr>`;
+  });
+  document.getElementById('tabla-main').innerHTML = html;
+}
 
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  RENDER CLIENTES                                                 ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function renderClientes(){
+  let html = `<tr><th>Nombre</th><th>RFC</th><th>Cultivo</th><th>Score</th><th></th></tr>`;
+  clientes.forEach(c=>{
+    const sc = scores.find(s=>s.cliente==c.id);
+    html+=`<tr>
+      <td><strong>${c.nombre}</strong><br><span style="font-size:.72rem;color:var(--muted)">${c.lugar||''}</span></td>
+      <td style="font-family:var(--mono);font-size:.78rem">${c.rfc||'—'}</td>
+      <td style="font-size:.78rem">${c.cultivo||'—'} ${c.ha?c.ha+'ha':''}</td>
+      <td>${sc?`<span class="badge badge-${sc.banda}">${sc.total} / ${sc.banda}</span>`:'<span style="color:var(--muted);font-size:.75rem">Sin score</span>'}</td>
+      <td><button class="btn btn-sm btn-danger" onclick="eliminarCliente(${c.id})">✕</button></td>
+    </tr>`;
+  });
+  if(!clientes.length) html+=`<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:24px">No hay clientes registrados</td></tr>`;
+  document.getElementById('tabla-clientes').innerHTML=html;
+  poblarSelects();
+}
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  RENDER SCORING                                                  ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function renderScoring(){
+  poblarSelects();
+  let html=`<tr><th>Cliente</th><th>Score</th><th>Banda</th><th>Fecha</th></tr>`;
+  scores.forEach(s=>{
+    const cli=clientes.find(c=>c.id==s.cliente);
+    html+=`<tr>
+      <td>${cli?.nombre||'?'}</td>
+      <td style="font-family:var(--mono)">${s.total}/100</td>
+      <td><span class="badge badge-${s.banda}">Banda ${s.banda}</span></td>
+      <td style="font-size:.75rem;color:var(--muted)">${s.fecha||'—'}</td>
+    </tr>`;
+  });
+  if(!scores.length) html+=`<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:24px">Sin scores registrados</td></tr>`;
+  document.getElementById('tabla-scores').innerHTML=html;
+}
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  RENDER CUENTAS                                                  ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function renderCuentas(){
+  poblarSelects();
+  let html=`<tr><th>Cliente</th><th>Folio</th><th>Monto</th><th>Plazo</th><th>Vence</th><th>Estado</th></tr>`;
+  cuentas.forEach(c=>{
+    const cli=clientes.find(x=>x.id==c.cliente);
+    const dv=diasHastaVencer(c.fecha,c.credito);
+    const liq=estaLiquidada(c.id);
+    html+=`<tr>
+      <td>${cli?.nombre||'?'}</td>
+      <td style="font-family:var(--mono);font-size:.75rem">${c.folio||'—'}</td>
+      <td style="font-family:var(--mono)">$${fmt(c.monto)}</td>
+      <td style="font-family:var(--mono)">${c.credito}d</td>
+      <td style="font-family:var(--mono);font-size:.78rem">${c.fecha}</td>
+      <td>${liq?'<span class="badge badge-A">Liquidada</span>':dv<0?'<span class="badge badge-C">Vencida</span>':'<span class="badge" style="background:rgba(0,212,170,.1);color:var(--accent)">Vigente</span>'}</td>
+    </tr>`;
+  });
+  if(!cuentas.length) html+=`<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:24px">Sin cuentas registradas</td></tr>`;
+  document.getElementById('tabla-cuentas').innerHTML=html;
+}
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  RENDER PROMESAS                                                 ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function renderPromesas(){
+  poblarSelects();
+  let html='';
+  if(!promesas.length){ html='<div style="color:var(--muted);font-size:.85rem;text-align:center;padding:24px">Sin promesas registradas</div>'; }
+  promesas.slice().reverse().forEach(p=>{
+    const cli=clientes.find(x=>x.id==p.cliente);
+    const cuenta=cuentas.find(c=>c.id==p.cuenta);
+    const vencida=!p.cumplido && new Date()>new Date(p.fecha);
+    const dot=p.cumplido?'ok':vencida?'venc':'pend';
+    const estado=p.cumplido?'✅ Cumplida':vencida?'🔴 Vencida':'🟡 Pendiente';
+    html+=`<div class="ptp-item">
+      <div class="ptp-dot ${dot}"></div>
+      <div class="ptp-info">
+        <div class="ptp-nombre">${cli?.nombre||'?'}</div>
+        <div class="ptp-fecha">${p.fecha} · ${p.canal||'—'} · ${estado}</div>
+        ${p.notas?`<div style="font-size:.72rem;color:var(--muted);margin-top:2px">${p.notas}</div>`:''}
+      </div>
+      <div class="ptp-monto">$${fmt(p.montoComprometido||cuenta?.monto||0)}</div>
+      ${!p.cumplido?`<button class="btn btn-sm btn-primary" onclick="cumplirPromesa(${p.id})">✔ Cumplida</button>`:''}
+    </div>`;
+  });
+  document.getElementById('lista-promesas').innerHTML=html;
+}
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  RENDER COBRANZA                                                 ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function renderCobranza(){
+  poblarSelects();
+  let html=`<tr><th>Cliente</th><th>Monto</th><th>Forma</th><th>Referencia</th><th>Fecha</th><th>Estado</th></tr>`;
+  pagos.slice().reverse().forEach(p=>{
+    const cli=clientes.find(x=>x.id==p.cliente);
+    html+=`<tr>
+      <td>${cli?.nombre||'?'}</td>
+      <td style="font-family:var(--mono)">$${fmt(p.monto)}</td>
+      <td style="font-size:.78rem">${p.forma||'—'}</td>
+      <td style="font-family:var(--mono);font-size:.75rem">${p.ref||'—'}</td>
+      <td style="font-size:.78rem">${p.fecha||'—'}</td>
+      <td>${p.liquidado?'<span class="badge badge-A">Liquidó</span>':'<span class="badge badge-B">Parcial</span>'}</td>
+    </tr>`;
+  });
+  if(!pagos.length) html+=`<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:24px">Sin pagos registrados</td></tr>`;
+  document.getElementById('tabla-pagos').innerHTML=html;
+}
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  RENDER REGLAS / SIMULADOR                                       ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function renderReglas(){
+  poblarSelects();
+}
+function simularCredito(){
+  const clienteId = document.getElementById('sim-cliente').value;
+  const monto = parseFloat(document.getElementById('sim-monto').value)||0;
+  if(!clienteId){ document.getElementById('sim-resultado').innerHTML=''; return; }
+  const nivel = nivelCredito(clienteId);
+  const sc = scores.find(s=>s.cliente==clienteId);
+  const cli = clientes.find(c=>c.id==clienteId);
+  let html='';
+  if(nivel.dias===0){
+    html=`<div class="alert alert-danger">🚫 Crédito NO autorizado — ${nivel.motivo}</div>`;
+  } else {
+    html=`<div class="alert alert-good">✅ Crédito autorizable hasta <strong>${nivel.dias} días</strong></div>
+    <div style="margin-top:10px;font-size:.82rem">
+      <div style="margin-bottom:6px">Cliente: <strong>${cli?.nombre}</strong></div>
+      <div style="margin-bottom:6px">Banda score: <span class="badge badge-${sc?.banda||'Sin'}">${sc?.banda||'Sin score'}</span></div>
+      <div style="margin-bottom:6px">Motivo: ${nivel.motivo}</div>
+      ${monto>0?`<div style="margin-top:10px;padding:10px;background:var(--surface);border-radius:8px;font-family:var(--mono)">Monto: $${fmt(monto)} · Plazo: ${nivel.dias}d · Vence aprox.: ${new Date(Date.now()+nivel.dias*86400000).toLocaleDateString('es-MX')}</div>`:''}
+    </div>`;
+  }
+  document.getElementById('sim-resultado').innerHTML=html;
+}
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  RENDER COSTOS                                                   ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function renderCostos(){
+  // Prellenar campos
+  if(costos.horas) document.getElementById('cost-horas').value=costos.horas;
+  if(costos.viaticos) document.getElementById('cost-viaticos').value=costos.viaticos;
+  if(costos.comunicacion) document.getElementById('cost-comunicacion').value=costos.comunicacion;
+  if(costos.admin) document.getElementById('cost-admin').value=costos.admin;
+
+  const c2c = calcularCostToCollect();
+  const costo = parseFloat(document.getElementById('cost-horas')?.value||0)+
+                parseFloat(document.getElementById('cost-viaticos')?.value||0)+
+                parseFloat(document.getElementById('cost-comunicacion')?.value||0)+
+                parseFloat(document.getElementById('cost-admin')?.value||0);
+  const recuperado = pagos.reduce((t,p)=>t+(p.monto||0),0);
+  const ratio = recuperado>0?(costo/recuperado)*100:0;
+  const veces=(ratio/100).toFixed(2);
+  const esIneficiente = ratio>100;
+  document.getElementById('cost-dashboard').innerHTML=`
+    <div class="kpi-grid" style="grid-template-columns:1fr 1fr;gap:12px">
+      <div class="kpi"><div class="kpi-label">Costo total cobranza</div><div class="kpi-val" style="color:var(--warn)">$${fmt(costo)}</div></div>
+      <div class="kpi"><div class="kpi-label">Recuperado período</div><div class="kpi-val" style="color:var(--good)">$${fmt(recuperado)}</div></div>
+    </div>
+    <div style="text-align:center;padding:20px 0">
+      <div class="cost-label">COSTO POR CADA $1 COBRADO</div>
+      <div class="cost-ratio-big" style="color:${esIneficiente?'var(--danger)':'var(--good)'}">$${veces}</div>
+      <div style="margin-top:8px">${esIneficiente?'<div class="alert alert-danger">🔴 Cobranza ineficiente — el costo supera lo recuperado</div>':'<div class="alert alert-good">🟢 Cobranza eficiente</div>'}</div>
+    </div>`;
+}
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  EXPORTAR CSV                                                    ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function exportarCSV(tipo){
+  let headers,rows=[];
+  if(tipo==='cartera'){
+    headers=['Cliente','RFC','Score','Banda','CreditoSistema(dias)','CreditoOtorgado(dias)','Monto','Folio','FechaVenta','DiasVencer','Liquidada','FechaPromesa','CanalPromesa','EstadoPromesa'];
     cuentas.forEach(c=>{
-        let cliente = clientes.find(x=>x.id==c.cliente);
-        let score = obtenerScore(c.cliente);
-        let promesa = obtenerPromesa(c.id);
-
-        tabla.innerHTML+=`
-        <tr>
-        <td>${cliente?.nombre}</td>
-        <td>${score?score.total:"—"}</td>
-        <td>${nivelCredito(c.cliente)} días</td>
-        <td>${c.credito} días</td>
-        <td>$${c.monto.toLocaleString('es-MX')}</td>
-        <td>${dias(c.fecha)}</td>
-        <td>${estadoPromesa(promesa, c.id)}</td>
-        </tr>`;
+      const cli=clientes.find(x=>x.id==c.cliente);
+      const sc=scores.find(s=>s.cliente==c.cliente);
+      const ptp=promesas.find(p=>p.cuenta==c.id);
+      const niv=nivelCredito(c.cliente);
+      rows.push([cli?.nombre||'',cli?.rfc||'',sc?.total||'',sc?.banda||'',niv.dias,c.credito,c.monto,c.folio||'',c.fecha,diasHastaVencer(c.fecha,c.credito),estaLiquidada(c.id)?'Sí':'No',ptp?.fecha||'',ptp?.canal||'',ptp?(ptp.cumplido?'Cumplida':'Pendiente'):'']);
     });
-
-    let k = calcularKPIs();
-
-    kpis.innerHTML = `
-    <table>
-    <tr><th>KPI</th><th>Resultado</th><th>Estado</th></tr>
-    <tr><td>DSO</td><td>${k.dso.toFixed(1)} días</td><td>${semaforo(k.dso,45,"max")}</td></tr>
-    <tr><td>% cartera 60+</td><td>${k.pct60.toFixed(1)}%</td><td>${semaforo(k.pct60,10,"max")}</td></tr>
-    <tr><td>Cobro 30 días</td><td>${k.pctCobro30.toFixed(1)}%</td><td>${semaforo(k.pctCobro30,70,"min")}</td></tr>
-    <tr><td>PTP cumplidas</td><td>${k.pctPTP.toFixed(1)}%</td><td>${semaforo(k.pctPTP,85,"min")}</td></tr>
-    </table>`;
-
-    let cost = calcularCostToCollect();
-
-let veces = cost.ratio / 100;
-
-let mensaje = "";
-
-if(veces > 1){
-    mensaje = `🔴 Estás gastando $${veces.toFixed(1)} por cada $1 que cobras`;
-}else{
-    mensaje = `🟢 Estás gastando $${veces.toFixed(2)} por cada $1 que cobras`;
+  } else if(tipo==='vencida'){
+    headers=['Cliente','RFC','Monto','FechaVenta','DiasVencida','UltimaPromesa','CanalContacto'];
+    cuentas.filter(c=>!estaLiquidada(c.id)&&diasHastaVencer(c.fecha,c.credito)<-60).forEach(c=>{
+      const cli=clientes.find(x=>x.id==c.cliente);
+      const ptp=promesas.find(p=>p.cuenta==c.id);
+      rows.push([cli?.nombre||'',cli?.rfc||'',c.monto,c.fecha,-diasHastaVencer(c.fecha,c.credito),ptp?.fecha||'Sin promesa',ptp?.canal||'—']);
+    });
+  } else {
+    headers=['Cliente','MontoComprometido','FechaPromesa','Canal','Estado','Notas'];
+    promesas.forEach(p=>{
+      const cli=clientes.find(x=>x.id==p.cliente);
+      rows.push([cli?.nombre||'',p.montoComprometido||'',p.fecha,p.canal||'',p.cumplido?'Cumplida':'Pendiente',p.notas||'']);
+    });
+  }
+  if(!rows.length){ toast('⚠️ Sin datos para exportar'); return; }
+  let csv=headers.join(',')+'\n';
+  rows.forEach(r=>{ csv+=r.map(v=>`"${v}"`).join(',')+'\n'; });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`Cartera_${tipo}_${today()}.csv`; a.click();
+  URL.revokeObjectURL(url);
+  toast('📤 CSV exportado');
 }
 
-costDashboard.innerHTML = `
-<div>💰 Costo cobranza: $${cost.totalCost.toLocaleString('es-MX')}</div>
-<div>${mensaje}</div>
-`;
-}
-
-function cargar(){
-
-    clienteSelect.innerHTML="";
-    clienteScore.innerHTML="";
-    cuentaSelect.innerHTML="";
-
-    clientes.forEach(c=>{
-        clienteSelect.innerHTML+=`<option value="${c.id}">${c.nombre}</option>`;
-        clienteScore.innerHTML+=`<option value="${c.id}">${c.nombre}</option>`;
-    });
-
-    cuentas.forEach(c=>{
-        let cliente = clientes.find(x=>x.id==c.cliente);
-        cuentaSelect.innerHTML+=`<option value="${c.id}">${cliente?.nombre}</option>`;
-    });
-
-    render();
-}
-
-function exportarCSV(){
-
-    if(cuentas.length === 0){
-        alert("No hay datos");
-        return;
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  POBLAR SELECTS                                                  ║
+// ╚══════════════════════════════════════════════════════════════════╝
+function poblarSelects(){
+  const ids=['cta-cliente','score-cliente','sim-cliente','pago-cuenta','ptp-cuenta'];
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    const prev=el.value;
+    if(id.includes('cuenta')||id==='ptp-cuenta'||id==='pago-cuenta'){
+      el.innerHTML='<option value="">— Seleccionar —</option>';
+      cuentas.forEach(c=>{
+        const cli=clientes.find(x=>x.id==c.cliente);
+        el.innerHTML+=`<option value="${c.id}">${cli?.nombre||'?'} · $${fmt(c.monto)} · ${c.credito}d</option>`;
+      });
+    } else {
+      el.innerHTML='<option value="">— Seleccionar —</option>';
+      clientes.forEach(c=>{ el.innerHTML+=`<option value="${c.id}">${c.nombre}</option>`; });
     }
-
-    let headers = ["Cliente","Score","Banda","CreditoSistema","CreditoOtorgado","Monto","Dias","FechaPromesa","EstadoPromesa"];
-
-    let csv = headers.join(",") + "\n";
-
-    cuentas.forEach(c=>{
-        let cliente = clientes.find(x=>x.id==c.cliente);
-        let score = obtenerScore(c.cliente);
-        let promesa = obtenerPromesa(c.id);
-
-        let row = [
-            cliente?.nombre || "",
-            score?.total || "",
-            score?.banda || "",
-            nivelCredito(c.cliente),
-            c.credito || "",
-            c.monto || 0,
-            dias(c.fecha),
-            promesa?.fecha || "",
-            promesa ? (promesa.cumplido ? "Cumplida" : "Pendiente") : ""
-        ];
-
-        csv += row.map(v => `"${v}"`).join(",") + "\n";
-    });
-
-    let blob = new Blob([csv], { type: 'text/csv' });
-    let url = URL.createObjectURL(blob);
-
-    let a = document.createElement("a");
-    a.href = url;
-    a.download = "Cartera_PRO.csv";
-    a.click();
+    if(prev) el.value=prev;
+  });
 }
 
-cargar();
-
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  INIT                                                            ║
+// ╚══════════════════════════════════════════════════════════════════╝
+document.addEventListener('DOMContentLoaded',()=>{
+  // Fecha de hoy como default
+  ['cta-fecha','ptp-fecha','pago-fecha'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=today(); });
+  poblarSelects();
+  renderDashboard();
+});
 </script>
-
 </body>
 </html>
