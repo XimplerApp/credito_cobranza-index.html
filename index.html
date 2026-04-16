@@ -24,8 +24,6 @@
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
-
-  /* ── Layout ── */
   .shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
   .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 28px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
   .sidebar-logo { padding: 0 20px 28px; border-bottom: 1px solid var(--border); }
@@ -34,29 +32,20 @@
   nav a { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: var(--muted); text-decoration: none; font-size: .85rem; font-weight: 500; transition: all .2s; border-left: 3px solid transparent; }
   nav a:hover, nav a.active { color: var(--text); background: rgba(0,212,170,.07); border-left-color: var(--accent); }
   nav .nav-section { font-size: .65rem; font-family: var(--mono); color: var(--muted); padding: 16px 20px 6px; letter-spacing: .08em; text-transform: uppercase; }
-
   .main { padding: 32px; overflow-x: hidden; }
   .page { display: none; }
   .page.active { display: block; }
   .page-title { font-family: var(--display); font-size: 1.7rem; margin-bottom: 6px; color: var(--text); }
   .page-sub { color: var(--muted); font-size: .85rem; margin-bottom: 28px; }
-
-  /* ── Cards ── */
   .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
   .card-title { font-family: var(--display); font-size: 1rem; margin-bottom: 16px; color: var(--accent); }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-
-  /* ── Forms ── */
   label { font-size: .78rem; color: var(--muted); display: block; margin-bottom: 4px; font-weight: 500; }
   input, select, textarea { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: .88rem; font-family: var(--sans); transition: border-color .2s; }
-  input:focus, select:focus { outline: none; border-color: var(--accent); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
   .field { margin-bottom: 14px; }
-  .field-inline { display: flex; gap: 8px; align-items: flex-end; }
-  .field-inline input { flex: 1; }
-
-  /* ── Buttons ── */
   .btn { padding: 9px 18px; border: none; border-radius: 8px; cursor: pointer; font-size: .85rem; font-weight: 600; font-family: var(--sans); transition: all .2s; white-space: nowrap; }
   .btn-primary { background: var(--accent); color: #000; }
   .btn-primary:hover { background: #00b894; }
@@ -65,8 +54,7 @@
   .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
   .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
   .btn-sm { padding: 5px 10px; font-size: .75rem; }
-
-  /* ── KPI tiles ── */
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
   .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
   .kpi-label { font-size: .72rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; }
@@ -75,8 +63,6 @@
   .kpi.green { border-left: 3px solid var(--good); }
   .kpi.yellow { border-left: 3px solid var(--warn); }
   .kpi.red { border-left: 3px solid var(--danger); }
-
-  /* ── Table ── */
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: .82rem; }
   th { background: var(--surface); color: var(--muted); font-size: .72rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
@@ -87,42 +73,27 @@
   .badge-A { background: rgba(34,197,94,.15); color: var(--good); }
   .badge-B { background: rgba(245,158,11,.15); color: var(--warn); }
   .badge-C { background: rgba(239,68,68,.15); color: var(--danger); }
-  .badge-block { background: rgba(239,68,68,.2); color: var(--danger); }
+  .badge-S { background: rgba(100,116,139,.15); color: #cbd5e1; }
   .dias-cell { font-family: var(--mono); }
   .dias-ok { color: var(--good); }
   .dias-warn { color: var(--warn); }
   .dias-bad { color: var(--danger); font-weight: 600; }
-
-  /* ── Score sliders ── */
   .score-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-  .score-row label { min-width: 140px; font-size: .8rem; }
+  .score-row label { min-width: 150px; font-size: .8rem; }
   .score-row input[type=range] { flex: 1; accent-color: var(--accent); }
   .score-row .score-num { font-family: var(--mono); min-width: 30px; text-align: right; color: var(--accent); font-size: .85rem; }
   .score-total-box { background: var(--surface); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
   .score-total-num { font-family: var(--display); font-size: 2.5rem; }
   .score-band { font-family: var(--mono); font-size: 1.1rem; padding: 4px 16px; border-radius: 8px; font-weight: 700; }
-
-  /* ── Progress bar ── */
   .bar-wrap { background: var(--surface); border-radius: 4px; height: 6px; margin-top: 6px; overflow: hidden; }
   .bar-fill { height: 100%; border-radius: 4px; transition: width .4s; }
-
-  /* ── Semáforo ── */
   .sem-green { color: var(--good); }
   .sem-yellow { color: var(--warn); }
   .sem-red { color: var(--danger); }
-
-  /* ── Alert boxes ── */
   .alert { border-radius: 10px; padding: 12px 16px; font-size: .83rem; margin-bottom: 12px; border-left: 3px solid; }
   .alert-warn { background: rgba(245,158,11,.1); border-color: var(--warn); color: var(--warn); }
   .alert-danger { background: rgba(239,68,68,.1); border-color: var(--danger); color: #fca5a5; }
   .alert-good { background: rgba(34,197,94,.1); border-color: var(--good); color: #86efac; }
-
-  /* ── Tabs ── */
-  .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); padding: 4px; border-radius: 10px; width: fit-content; }
-  .tab { padding: 7px 18px; border-radius: 8px; cursor: pointer; font-size: .82rem; font-weight: 500; color: var(--muted); transition: all .2s; }
-  .tab.active { background: var(--card); color: var(--text); }
-
-  /* ── Timeline promesas ── */
   .ptp-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 10px; background: var(--surface); margin-bottom: 8px; }
   .ptp-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
   .ptp-dot.ok { background: var(--good); }
@@ -132,1048 +103,1370 @@
   .ptp-nombre { font-size: .85rem; font-weight: 600; }
   .ptp-fecha { font-size: .75rem; color: var(--muted); font-family: var(--mono); }
   .ptp-monto { font-family: var(--mono); font-size: .85rem; color: var(--accent); }
-
-  /* ── Cost to collect ── */
   .cost-ratio-big { font-family: var(--display); font-size: 3rem; }
-  .cost-label { font-size: .8rem; color: var(--muted); font-family: var(--mono); }
-
-  /* ── Reglas crédito visual ── */
   .rule-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 10px; background: var(--surface); margin-bottom: 8px; border-left: 3px solid var(--border); }
   .rule-item.active-rule { border-left-color: var(--accent); }
-
-  /* ── Toast ── */
   #toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; font-size: .85rem; opacity: 0; transform: translateY(10px); transition: all .3s; pointer-events: none; z-index: 999; }
   #toast.show { opacity: 1; transform: translateY(0); }
-
-  /* ── Historial alertas ── */
-  .alert-row { font-size: .78rem; color: var(--danger); font-family: var(--mono); margin: 2px 0; }
-
+  .mono { font-family: var(--mono); }
+  .muted { color: var(--muted); }
+  @media (max-width: 1080px) {
+    .grid-3, .grid-4, .kpi-grid { grid-template-columns: 1fr 1fr; }
+  }
   @media (max-width: 900px) {
     .shell { grid-template-columns: 1fr; }
     .sidebar { position: static; height: auto; }
-    .kpi-grid { grid-template-columns: 1fr 1fr; }
-    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-2, .grid-3, .grid-4, .kpi-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
-
 <div class="shell">
-
-<!-- ── SIDEBAR ── -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <h1>🌾 Cartera &amp;<br>Crédito PRO</h1>
-    <span>Dealer Semillas · México</span>
-  </div>
-  <nav>
-    <div class="nav-section">Principal</div>
-    <a href="#" class="active" onclick="nav('dashboard')">📊 Tablero</a>
-    <a href="#" onclick="nav('clientes')">👤 Clientes</a>
-    <a href="#" onclick="nav('scoring')">🎯 Scoring</a>
-    <div class="nav-section">Operación</div>
-    <a href="#" onclick="nav('cuentas')">📋 Cuentas</a>
-    <a href="#" onclick="nav('promesas')">🤝 Promesas de Pago</a>
-    <a href="#" onclick="nav('cobranza')">💰 Cobranza</a>
-    <div class="nav-section">Análisis</div>
-    <a href="#" onclick="nav('reglas')">📜 Reglas de Crédito</a>
-    <a href="#" onclick="nav('costos')">📉 Cost to Collect</a>
-    <a href="#" onclick="nav('exportar')">📤 Exportar</a>
-  </nav>
-</aside>
-
-<!-- ── MAIN CONTENT ── -->
-<div class="main">
-
-<!-- ══ DASHBOARD ══ -->
-<div id="page-dashboard" class="page active">
-  <div class="page-title">Tablero Ejecutivo</div>
-  <div class="page-sub">Visión general de cartera en tiempo real</div>
-
-  <!-- Alertas críticas -->
-  <div id="alertas-criticas"></div>
-
-  <!-- KPIs -->
-  <div class="kpi-grid" id="kpi-grid"></div>
-
-  <!-- Distribución por banda -->
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-title">Distribución de Cartera</div>
-      <div id="distribucion-tabla"></div>
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>🌾 Cartera &amp;<br>Crédito PRO</h1>
+      <span>Dealer Semillas · México</span>
     </div>
-    <div class="card">
-      <div class="card-title">Antigüedad de Saldo</div>
-      <div id="aging-tabla"></div>
-    </div>
-  </div>
+    <nav>
+      <div class="nav-section">Principal</div>
+      <a href="#" class="active" onclick="nav('dashboard')">📊 Tablero</a>
+      <a href="#" onclick="nav('clientes')">👤 Clientes</a>
+      <a href="#" onclick="nav('scoring')">🎯 Scoring</a>
+      <div class="nav-section">Operación</div>
+      <a href="#" onclick="nav('cuentas')">📋 Cuentas</a>
+      <a href="#" onclick="nav('promesas')">🤝 Promesas de Pago</a>
+      <a href="#" onclick="nav('cobranza')">💰 Cobranza</a>
+      <div class="nav-section">Análisis</div>
+      <a href="#" onclick="nav('reglas')">📜 Reglas de Crédito</a>
+      <a href="#" onclick="nav('costos')">📉 Cost to Collect</a>
+      <a href="#" onclick="nav('exportar')">📤 Exportar</a>
+    </nav>
+  </aside>
 
-  <!-- Tabla resumen -->
-  <div class="card">
-    <div class="card-title">Cartera Activa</div>
-    <div class="table-wrap"><table id="tabla-main"></table></div>
-  </div>
-</div>
-
-<!-- ══ CLIENTES ══ -->
-<div id="page-clientes" class="page">
-  <div class="page-title">Gestión de Clientes</div>
-  <div class="page-sub">Registro y perfil de clientes con historial crediticio</div>
-
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-title">Nuevo Cliente</div>
-      <div class="field"><label>Nombre completo *</label><input id="cli-nombre" placeholder="Ej. Rancho San Miguel S.A. de C.V."></div>
-      <div class="field"><label>RFC</label><input id="cli-rfc" placeholder="XAXX010101000" maxlength="13"></div>
-      <div class="field"><label>Teléfono</label><input id="cli-tel" placeholder="+52 667 000 0000"></div>
-      <div class="field"><label>Municipio / Estado</label><input id="cli-lugar" placeholder="Culiacán, Sinaloa"></div>
-      <div class="field"><label>Cultivo principal</label><input id="cli-cultivo" placeholder="Ej. Maíz, Tomate, Frijol"></div>
-      <div class="field"><label>Hectáreas estimadas</label><input id="cli-ha" type="number" placeholder="0"></div>
-      <div class="field"><label>Observaciones</label><textarea id="cli-obs" rows="2" placeholder="Notas adicionales…"></textarea></div>
-      <button class="btn btn-primary" onclick="guardarCliente()">Guardar Cliente</button>
-    </div>
-    <div class="card">
-      <div class="card-title">Lista de Clientes</div>
-      <div class="table-wrap"><table id="tabla-clientes"></table></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ SCORING ══ -->
-<div id="page-scoring" class="page">
-  <div class="page-title">Scoring Crediticio</div>
-  <div class="page-sub">Evalúa a cada cliente con criterios ponderados del sector agrícola</div>
-
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-title">Calcular Score</div>
-      <div class="field"><label>Cliente</label>
-        <select id="score-cliente"></select>
-      </div>
-
-      <div id="criterios-scoring">
-        <!-- Criterio: Antigüedad -->
-        <div class="score-row">
-          <label>Antigüedad relación (años)</label>
-          <input type="range" id="sc-antiguedad" min="0" max="20" value="0" oninput="updScore(this,'sc-ant-num')">
-          <span class="score-num" id="sc-ant-num">0</span>
+  <div class="main">
+    <div id="page-dashboard" class="page active">
+      <div class="page-title">Tablero Ejecutivo</div>
+      <div class="page-sub">Visión general de cartera con saldos pendientes reales</div>
+      <div id="alertas-criticas"></div>
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Distribución de Cartera</div>
+          <div id="distribucion-tabla"></div>
         </div>
-        <div class="score-row">
-          <label>Referencias comerciales</label>
-          <input type="range" id="sc-referencias" min="0" max="20" value="0" oninput="updScore(this,'sc-ref-num')">
-          <span class="score-num" id="sc-ref-num">0</span>
-        </div>
-        <div class="score-row">
-          <label>Historial de pago interno</label>
-          <input type="range" id="sc-historial" min="0" max="25" value="0" oninput="updScore(this,'sc-his-num')">
-          <span class="score-num" id="sc-his-num">0</span>
-        </div>
-        <div class="score-row">
-          <label>Ticket promedio (volumen)</label>
-          <input type="range" id="sc-ticket" min="0" max="15" value="0" oninput="updScore(this,'sc-tck-num')">
-          <span class="score-num" id="sc-tck-num">0</span>
-        </div>
-        <div class="score-row">
-          <label>Perfil de riesgo general</label>
-          <input type="range" id="sc-riesgo" min="0" max="10" value="0" oninput="updScore(this,'sc-rie-num')">
-          <span class="score-num" id="sc-rie-num">0</span>
-        </div>
-        <div class="score-row">
-          <label>Garantías / Aval</label>
-          <input type="range" id="sc-garantias" min="0" max="10" value="0" oninput="updScore(this,'sc-gar-num')">
-          <span class="score-num" id="sc-gar-num">0</span>
+        <div class="card">
+          <div class="card-title">Antigüedad de Saldo</div>
+          <div id="aging-tabla"></div>
         </div>
       </div>
+      <div class="card">
+        <div class="card-title">Cartera Activa</div>
+        <div class="table-wrap"><table id="tabla-main"></table></div>
+      </div>
+    </div>
 
-      <div class="score-total-box">
-        <div>
-          <div style="font-size:.75rem;color:var(--muted);font-family:var(--mono)">SCORE TOTAL</div>
-          <div class="score-total-num" id="sc-total-num">0</div>
-          <div style="font-size:.75rem;color:var(--muted);margin-top:2px" id="sc-nivel-texto">—</div>
+    <div id="page-clientes" class="page">
+      <div class="page-title">Gestión de Clientes</div>
+      <div class="page-sub">Registro, edición y limpieza de clientes con cascada segura</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title" id="cliente-form-title">Nuevo Cliente</div>
+          <div class="field"><label>Nombre completo *</label><input id="cli-nombre" placeholder="Ej. Rancho San Miguel S.A. de C.V."></div>
+          <div class="field"><label>RFC</label><input id="cli-rfc" placeholder="XAXX010101000" maxlength="13"></div>
+          <div class="field"><label>Teléfono</label><input id="cli-tel" placeholder="+52 667 000 0000"></div>
+          <div class="field"><label>Municipio / Estado</label><input id="cli-lugar" placeholder="Culiacán, Sinaloa"></div>
+          <div class="field"><label>Cultivo principal</label><input id="cli-cultivo" placeholder="Ej. Maíz, Tomate, Frijol"></div>
+          <div class="field"><label>Hectáreas estimadas</label><input id="cli-ha" type="number" placeholder="0"></div>
+          <div class="field"><label>Observaciones</label><textarea id="cli-obs" rows="2" placeholder="Notas adicionales…"></textarea></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btn-cliente-guardar" onclick="guardarCliente()">Guardar Cliente</button>
+            <button class="btn btn-ghost" onclick="cancelarEdicionCliente()">Cancelar</button>
+          </div>
         </div>
-        <div class="score-band" id="sc-band">—</div>
-      </div>
-      <div class="bar-wrap" style="margin-top:10px"><div class="bar-fill" id="sc-bar" style="width:0%;background:var(--muted)"></div></div>
-      <br>
-      <button class="btn btn-primary" onclick="guardarScore()">💾 Guardar Score</button>
-    </div>
-    <div class="card">
-      <div class="card-title">Scores Registrados</div>
-      <div class="table-wrap"><table id="tabla-scores"></table></div>
-      <br>
-      <div class="alert alert-warn" style="font-size:.78rem">
-        ⚠️ Banda C = cliente bloqueado para nuevos créditos. Banda B = solo crédito de 15 días. Banda A = hasta 45 días según historial.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ CUENTAS ══ -->
-<div id="page-cuentas" class="page">
-  <div class="page-title">Nueva Cuenta de Crédito</div>
-  <div class="page-sub">Registro de venta a crédito con validación automática de políticas</div>
-
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-title">Registrar Cuenta</div>
-      <div class="field"><label>Cliente *</label><select id="cta-cliente" onchange="validarCuentaCliente()"></select></div>
-      <div id="cta-validacion"></div>
-      <div class="field"><label>Monto ($MXN) *</label><input id="cta-monto" type="number" placeholder="0.00" min="0"></div>
-      <div class="field"><label>Folio / Factura</label><input id="cta-folio" placeholder="FAC-2024-0001"></div>
-      <div class="field"><label>Fecha de venta *</label><input type="date" id="cta-fecha"></div>
-      <div class="field"><label>Plazo de crédito *</label>
-        <select id="cta-credito">
-          <option value="">— Seleccionar plazo —</option>
-          <option value="15">15 días</option>
-          <option value="30">30 días</option>
-          <option value="45">45 días</option>
-          <option value="60">60 días (solo con aprobación gerencia)</option>
-        </select>
-      </div>
-      <div class="field"><label>Producto / Semilla</label><input id="cta-producto" placeholder="Ej. Maíz Híbrido NK-212"></div>
-      <div class="field"><label>Ciclo agrícola</label>
-        <select id="cta-ciclo">
-          <option value="">— Ciclo —</option>
-          <option value="PV">Primavera-Verano</option>
-          <option value="OI">Otoño-Invierno</option>
-          <option value="Riego">Riego</option>
-          <option value="Temporal">Temporal</option>
-        </select>
-      </div>
-      <button class="btn btn-primary" onclick="guardarCuenta()">Registrar Cuenta</button>
-    </div>
-    <div class="card">
-      <div class="card-title">Cuentas por Cobrar</div>
-      <div class="table-wrap"><table id="tabla-cuentas"></table></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ PROMESAS ══ -->
-<div id="page-promesas" class="page">
-  <div class="page-title">Promesas de Pago</div>
-  <div class="page-sub">Registro y seguimiento de acuerdos de pago</div>
-
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-title">Nueva Promesa</div>
-      <div class="field"><label>Cuenta</label><select id="ptp-cuenta"></select></div>
-      <div class="field"><label>Monto comprometido ($)</label><input id="ptp-monto" type="number" placeholder="0.00"></div>
-      <div class="field"><label>Fecha de pago comprometida *</label><input type="date" id="ptp-fecha"></div>
-      <div class="field"><label>Canal de contacto</label>
-        <select id="ptp-canal">
-          <option value="Llamada">Llamada telefónica</option>
-          <option value="Visita">Visita en campo</option>
-          <option value="WhatsApp">WhatsApp</option>
-          <option value="Email">Email</option>
-        </select>
-      </div>
-      <div class="field"><label>Notas del gestor</label><textarea id="ptp-notas" rows="2" placeholder="Contexto de la negociación…"></textarea></div>
-      <button class="btn btn-primary" onclick="guardarPromesa()">Registrar Promesa</button>
-    </div>
-    <div class="card">
-      <div class="card-title">Estado de Promesas</div>
-      <div id="lista-promesas"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ COBRANZA ══ -->
-<div id="page-cobranza" class="page">
-  <div class="page-title">Gestión de Cobranza</div>
-  <div class="page-sub">Registra pagos y acciones de cobranza por cuenta</div>
-
-  <div class="card">
-    <div class="card-title">Registrar Pago</div>
-    <div class="grid-3">
-      <div class="field"><label>Cuenta</label><select id="pago-cuenta"></select></div>
-      <div class="field"><label>Monto pagado ($MXN)</label><input id="pago-monto" type="number" placeholder="0.00"></div>
-      <div class="field"><label>Forma de pago</label>
-        <select id="pago-forma">
-          <option value="Transferencia">Transferencia</option>
-          <option value="Cheque">Cheque</option>
-          <option value="Efectivo">Efectivo</option>
-          <option value="Depósito">Depósito bancario</option>
-        </select>
-      </div>
-      <div class="field"><label>Fecha de pago</label><input type="date" id="pago-fecha"></div>
-      <div class="field"><label>Referencia bancaria</label><input id="pago-ref" placeholder="REF-001"></div>
-      <div class="field"><label>Notas</label><input id="pago-notas" placeholder="Observaciones del pago"></div>
-    </div>
-    <button class="btn btn-primary" onclick="registrarPago()">✅ Registrar Pago</button>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Historial de Pagos</div>
-    <div class="table-wrap"><table id="tabla-pagos"></table></div>
-  </div>
-</div>
-
-<!-- ══ REGLAS DE CRÉDITO ══ -->
-<div id="page-reglas" class="page">
-  <div class="page-title">Política de Crédito</div>
-  <div class="page-sub">Reglas automáticas de otorgamiento — Motor de decisión integrado</div>
-
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-title">Reglas de Otorgamiento</div>
-      <div class="rule-item active-rule">
-        <div>
-          <div style="font-weight:600;font-size:.88rem">🟢 Score ≥ 80 (Banda A)</div>
-          <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Crédito máximo 45 días. Sin restricciones si no tiene vencidos &gt;60 días. Límite hasta 3× ticket promedio histórico.</div>
-        </div>
-      </div>
-      <div class="rule-item active-rule">
-        <div>
-          <div style="font-weight:600;font-size:.88rem">🟡 Score 60–79 (Banda B)</div>
-          <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Crédito máximo 30 días. Requiere al menos 2 pagos previos a tiempo. Límite hasta 1.5× ticket promedio histórico.</div>
-        </div>
-      </div>
-      <div class="rule-item">
-        <div>
-          <div style="font-weight:600;font-size:.88rem">🔴 Score &lt; 60 (Banda C)</div>
-          <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Crédito BLOQUEADO. Solo contado o requiere aval y aprobación gerencia. No se emiten facturas a crédito.</div>
-        </div>
-      </div>
-      <div class="rule-item">
-        <div>
-          <div style="font-weight:600;font-size:.88rem">⛔ Cartera vencida &gt;60 días</div>
-          <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Bloqueo automático independiente del score. No se activa nuevo crédito hasta regularización total.</div>
-        </div>
-      </div>
-      <div class="rule-item">
-        <div>
-          <div style="font-weight:600;font-size:.88rem">📅 Estacionalidad agrícola</div>
-          <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Plazos extendidos en temporada de cosecha (Oct–Dic / Abr–Jun) con autorización del gerente regional.</div>
+        <div class="card">
+          <div class="card-title">Lista de Clientes</div>
+          <div class="table-wrap"><table id="tabla-clientes"></table></div>
         </div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title">Simulador de Crédito</div>
-      <div class="field"><label>Selecciona cliente</label><select id="sim-cliente" onchange="simularCredito()"></select></div>
-      <div class="field"><label>Monto solicitado ($)</label><input id="sim-monto" type="number" placeholder="0" oninput="simularCredito()"></div>
-      <div id="sim-resultado"></div>
-    </div>
-  </div>
-</div>
 
-<!-- ══ COST TO COLLECT ══ -->
-<div id="page-costos" class="page">
-  <div class="page-title">Cost to Collect</div>
-  <div class="page-sub">Eficiencia del área de cobranza vs recuperación real</div>
+    <div id="page-scoring" class="page">
+      <div class="page-title">Scoring Crediticio</div>
+      <div class="page-sub">Bloqueo por score menor a 50 puntos</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title" id="score-form-title">Calcular Score</div>
+          <div class="field"><label>Cliente</label><select id="score-cliente" onchange="onScoreClienteChange()"></select></div>
+          <div id="criterios-scoring">
+            <div class="score-row">
+              <label>Antigüedad relación (años)</label>
+              <input type="range" id="sc-antiguedad" min="0" max="20" value="0" oninput="updScore(this,'sc-ant-num')">
+              <span class="score-num" id="sc-ant-num">0</span>
+            </div>
+            <div class="score-row">
+              <label>Referencias comerciales</label>
+              <input type="range" id="sc-referencias" min="0" max="20" value="0" oninput="updScore(this,'sc-ref-num')">
+              <span class="score-num" id="sc-ref-num">0</span>
+            </div>
+            <div class="score-row">
+              <label>Historial de pago interno</label>
+              <input type="range" id="sc-historial" min="0" max="25" value="0" oninput="updScore(this,'sc-his-num')">
+              <span class="score-num" id="sc-his-num">0</span>
+            </div>
+            <div class="score-row">
+              <label>Ticket promedio (volumen)</label>
+              <input type="range" id="sc-ticket" min="0" max="15" value="0" oninput="updScore(this,'sc-tck-num')">
+              <span class="score-num" id="sc-tck-num">0</span>
+            </div>
+            <div class="score-row">
+              <label>Perfil de riesgo general</label>
+              <input type="range" id="sc-riesgo" min="0" max="10" value="0" oninput="updScore(this,'sc-rie-num')">
+              <span class="score-num" id="sc-rie-num">0</span>
+            </div>
+            <div class="score-row">
+              <label>Garantías / Aval</label>
+              <input type="range" id="sc-garantias" min="0" max="10" value="0" oninput="updScore(this,'sc-gar-num')">
+              <span class="score-num" id="sc-gar-num">0</span>
+            </div>
+          </div>
+          <div class="score-total-box">
+            <div>
+              <div style="font-size:.75rem;color:var(--muted);font-family:var(--mono)">SCORE TOTAL</div>
+              <div class="score-total-num" id="sc-total-num">0</div>
+              <div style="font-size:.75rem;color:var(--muted);margin-top:2px" id="sc-nivel-texto">—</div>
+            </div>
+            <div class="score-band" id="sc-band">—</div>
+          </div>
+          <div class="bar-wrap" style="margin-top:10px"><div class="bar-fill" id="sc-bar" style="width:0%;background:var(--muted)"></div></div>
+          <br>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btn-score-guardar" onclick="guardarScore()">💾 Guardar Score</button>
+            <button class="btn btn-ghost" onclick="cancelarEdicionScore()">Cancelar</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Scores Registrados</div>
+          <div class="table-wrap"><table id="tabla-scores"></table></div>
+          <br>
+          <div class="alert alert-warn" style="font-size:.78rem">
+            ⚠️ Banda C = cliente bloqueado para nuevos créditos desde menos de 50 puntos. Banda B = 50 a 79 puntos. Banda A = 80 a 100 puntos.
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-title">Costos del Período</div>
-      <div class="field"><label>Costo horas de personal ($MXN)</label><input id="cost-horas" type="number" placeholder="0.00" oninput="calcCostos()"></div>
-      <div class="field"><label>Viáticos y transporte ($MXN)</label><input id="cost-viaticos" type="number" placeholder="0.00" oninput="calcCostos()"></div>
-      <div class="field"><label>Comunicaciones ($MXN)</label><input id="cost-comunicacion" type="number" placeholder="0.00" oninput="calcCostos()"></div>
-      <div class="field"><label>Gastos administrativos ($MXN)</label><input id="cost-admin" type="number" placeholder="0.00" oninput="calcCostos()"></div>
-      <button class="btn btn-primary" onclick="guardarCostos()">Guardar Costos</button>
+    <div id="page-cuentas" class="page">
+      <div class="page-title">Cuentas de Crédito</div>
+      <div class="page-sub">Registro, edición y borrado con saldo pendiente real</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title" id="cuenta-form-title">Registrar Cuenta</div>
+          <div class="field"><label>Cliente *</label><select id="cta-cliente" onchange="validarCuentaCliente()"></select></div>
+          <div id="cta-validacion"></div>
+          <div class="field"><label>Monto ($MXN) *</label><input id="cta-monto" type="number" placeholder="0.00" min="0"></div>
+          <div class="field"><label>Folio / Factura</label><input id="cta-folio" placeholder="FAC-2024-0001"></div>
+          <div class="field"><label>Fecha de venta *</label><input type="date" id="cta-fecha"></div>
+          <div class="field"><label>Plazo de crédito *</label>
+            <select id="cta-credito">
+              <option value="">— Seleccionar plazo —</option>
+              <option value="15">15 días</option>
+              <option value="30">30 días</option>
+              <option value="45">45 días</option>
+              <option value="60">60 días (solo con aprobación gerencia)</option>
+            </select>
+          </div>
+          <div class="field"><label>Producto / Semilla</label><input id="cta-producto" placeholder="Ej. Maíz Híbrido NK-212"></div>
+          <div class="field"><label>Ciclo agrícola</label>
+            <select id="cta-ciclo">
+              <option value="">— Ciclo —</option>
+              <option value="PV">Primavera-Verano</option>
+              <option value="OI">Otoño-Invierno</option>
+              <option value="Riego">Riego</option>
+              <option value="Temporal">Temporal</option>
+            </select>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btn-cuenta-guardar" onclick="guardarCuenta()">Registrar Cuenta</button>
+            <button class="btn btn-ghost" onclick="cancelarEdicionCuenta()">Cancelar</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Cuentas por Cobrar</div>
+          <div class="table-wrap"><table id="tabla-cuentas"></table></div>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <div class="card-title">Indicador Cost to Collect</div>
-      <div id="cost-dashboard"></div>
-    </div>
-  </div>
-</div>
 
-<!-- ══ EXPORTAR ══ -->
-<div id="page-exportar" class="page">
-  <div class="page-title">Exportar Datos</div>
-  <div class="page-sub">Genera reportes en CSV para análisis externo</div>
+    <div id="page-promesas" class="page">
+      <div class="page-title">Promesas de Pago</div>
+      <div class="page-sub">Registro, edición y seguimiento de acuerdos de pago</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title" id="promesa-form-title">Nueva Promesa</div>
+          <div class="field"><label>Cuenta</label><select id="ptp-cuenta"></select></div>
+          <div class="field"><label>Monto comprometido ($)</label><input id="ptp-monto" type="number" placeholder="0.00"></div>
+          <div class="field"><label>Fecha de pago comprometida *</label><input type="date" id="ptp-fecha"></div>
+          <div class="field"><label>Canal de contacto</label>
+            <select id="ptp-canal">
+              <option value="Llamada">Llamada telefónica</option>
+              <option value="Visita">Visita en campo</option>
+              <option value="WhatsApp">WhatsApp</option>
+              <option value="Email">Email</option>
+            </select>
+          </div>
+          <div class="field"><label>Notas del gestor</label><textarea id="ptp-notas" rows="2" placeholder="Contexto de la negociación…"></textarea></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btn-promesa-guardar" onclick="guardarPromesa()">Registrar Promesa</button>
+            <button class="btn btn-ghost" onclick="cancelarEdicionPromesa()">Cancelar</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Estado de Promesas</div>
+          <div id="lista-promesas"></div>
+        </div>
+      </div>
+    </div>
 
-  <div class="grid-3">
-    <div class="card">
-      <div class="card-title">📋 Cartera Completa</div>
-      <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Todas las cuentas con score, plazo, días, promesas y estado de pago.</p>
-      <button class="btn btn-primary" onclick="exportarCSV('cartera')">Exportar Cartera.csv</button>
+    <div id="page-cobranza" class="page">
+      <div class="page-title">Gestión de Cobranza</div>
+      <div class="page-sub">Registra pagos y corrige histórico cuando sea necesario</div>
+      <div class="card">
+        <div class="card-title" id="pago-form-title">Registrar Pago</div>
+        <div class="grid-3">
+          <div class="field"><label>Cuenta</label><select id="pago-cuenta"></select></div>
+          <div class="field"><label>Monto pagado ($MXN)</label><input id="pago-monto" type="number" placeholder="0.00"></div>
+          <div class="field"><label>Forma de pago</label>
+            <select id="pago-forma">
+              <option value="Transferencia">Transferencia</option>
+              <option value="Cheque">Cheque</option>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Depósito">Depósito bancario</option>
+            </select>
+          </div>
+          <div class="field"><label>Fecha de pago</label><input type="date" id="pago-fecha"></div>
+          <div class="field"><label>Referencia bancaria</label><input id="pago-ref" placeholder="REF-001"></div>
+          <div class="field"><label>Notas</label><input id="pago-notas" placeholder="Observaciones del pago"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btn-pago-guardar" onclick="guardarPago()">✅ Registrar Pago</button>
+          <button class="btn btn-ghost" onclick="cancelarEdicionPago()">Cancelar</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Historial de Pagos</div>
+        <div class="table-wrap"><table id="tabla-pagos"></table></div>
+      </div>
     </div>
-    <div class="card">
-      <div class="card-title">🔴 Vencida &gt;60 días</div>
-      <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Solo cuentas en cartera vencida para gestión urgente de cobranza.</p>
-      <button class="btn btn-danger" onclick="exportarCSV('vencida')">Exportar Vencida.csv</button>
+
+    <div id="page-reglas" class="page">
+      <div class="page-title">Política de Crédito</div>
+      <div class="page-sub">Reglas automáticas de otorgamiento y simulador</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Reglas de Otorgamiento</div>
+          <div class="rule-item active-rule">
+            <div>
+              <div style="font-weight:600;font-size:.88rem">🟢 Score ≥ 80 (Banda A)</div>
+              <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Crédito máximo 45 días. Sin restricciones si no tiene vencidos mayores a 60 días. Referencia de monto: hasta 3× ticket promedio histórico.</div>
+            </div>
+          </div>
+          <div class="rule-item active-rule">
+            <div>
+              <div style="font-weight:600;font-size:.88rem">🟡 Score 50–79 (Banda B)</div>
+              <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Crédito inicial 15 días. Puede subir a 30 días si ya tiene al menos 2 cuentas liquidadas a tiempo. Referencia de monto: hasta 1.5× ticket promedio histórico.</div>
+            </div>
+          </div>
+          <div class="rule-item">
+            <div>
+              <div style="font-weight:600;font-size:.88rem">🔴 Score &lt; 50 (Banda C)</div>
+              <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Crédito BLOQUEADO. Solo contado o excepción con aval y aprobación gerencia.</div>
+            </div>
+          </div>
+          <div class="rule-item">
+            <div>
+              <div style="font-weight:600;font-size:.88rem">⛔ Cartera vencida &gt;60 días</div>
+              <div style="font-size:.78rem;color:var(--muted);margin-top:4px">Bloqueo automático independiente del score. No se activa nuevo crédito hasta regularización total.</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Simulador de Crédito</div>
+          <div class="field"><label>Selecciona cliente</label><select id="sim-cliente" onchange="simularCredito()"></select></div>
+          <div class="field"><label>Monto solicitado ($)</label><input id="sim-monto" type="number" placeholder="0" oninput="simularCredito()"></div>
+          <div id="sim-resultado"></div>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <div class="card-title">🤝 Promesas de Pago</div>
-      <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Reporte de promesas de pago con cumplimiento y monto comprometido.</p>
-      <button class="btn btn-warn" onclick="exportarCSV('promesas')">Exportar Promesas.csv</button>
+
+    <div id="page-costos" class="page">
+      <div class="page-title">Cost to Collect</div>
+      <div class="page-sub">Eficiencia del área de cobranza contra pagos registrados</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Costos del Período</div>
+          <div class="field"><label>Costo horas de personal ($MXN)</label><input id="cost-horas" type="number" placeholder="0.00" oninput="calcCostos()"></div>
+          <div class="field"><label>Viáticos y transporte ($MXN)</label><input id="cost-viaticos" type="number" placeholder="0.00" oninput="calcCostos()"></div>
+          <div class="field"><label>Comunicaciones ($MXN)</label><input id="cost-comunicacion" type="number" placeholder="0.00" oninput="calcCostos()"></div>
+          <div class="field"><label>Gastos administrativos ($MXN)</label><input id="cost-admin" type="number" placeholder="0.00" oninput="calcCostos()"></div>
+          <button class="btn btn-primary" onclick="guardarCostos()">Guardar Costos</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Indicador Cost to Collect</div>
+          <div id="cost-dashboard"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="page-exportar" class="page">
+      <div class="page-title">Exportar Datos</div>
+      <div class="page-sub">Reportes con saldo real, pagado y estatus</div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">📋 Cartera Completa</div>
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Todas las cuentas con score, plazo, monto original, pagado y saldo pendiente.</p>
+          <button class="btn btn-primary" onclick="exportarCSV('cartera')">Exportar Cartera.csv</button>
+        </div>
+        <div class="card">
+          <div class="card-title">🔴 Vencida &gt;60 días</div>
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Solo cuentas vencidas con más de 60 días posteriores al vencimiento.</p>
+          <button class="btn btn-danger" onclick="exportarCSV('vencida')">Exportar Vencida.csv</button>
+        </div>
+        <div class="card">
+          <div class="card-title">🤝 Promesas de Pago</div>
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Promesas con monto comprometido, fecha, canal, cumplimiento y cuenta relacionada.</p>
+          <button class="btn btn-warn" onclick="exportarCSV('promesas')">Exportar Promesas.csv</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
-</div><!-- /main -->
-</div><!-- /shell -->
-
 <div id="toast"></div>
-
-<!-- ═══════════════════════════════════════════════════════════════ -->
 <script>
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  ESTADO — persistencia en localStorage                          ║
-// ╚══════════════════════════════════════════════════════════════════╝
-let clientes  = parse('clientes',  []);
-let cuentas   = parse('cuentas',   []);
-let scores    = parse('scores',    []);
-let promesas  = parse('promesas',  []);
-let pagos     = parse('pagos',     []);
-let costos    = parse('costos',    {horas:0,viaticos:0,comunicacion:0,admin:0});
+let clientes = parse('clientes', []);
+let cuentas = parse('cuentas', []);
+let scores = parse('scores', []);
+let promesas = parse('promesas', []);
+let pagos = parse('pagos', []);
+let costos = parse('costos', { horas:0, viaticos:0, comunicacion:0, admin:0 });
 
-function parse(k, def){ try{ return JSON.parse(localStorage.getItem(k)) || def; }catch{ return def; } }
+const editing = {
+  cliente: null,
+  score: null,
+  cuenta: null,
+  promesa: null,
+  pago: null
+};
+
+function parse(k, def){
+  try {
+    const raw = JSON.parse(localStorage.getItem(k));
+    return raw ?? def;
+  } catch {
+    return def;
+  }
+}
 function save(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+function persistAll(){
+  save('clientes', clientes);
+  save('cuentas', cuentas);
+  save('scores', scores);
+  save('promesas', promesas);
+  save('pagos', pagos);
+  save('costos', costos);
+}
+function today(){ return new Date().toISOString().split('T')[0]; }
+function num(v){ return parseFloat(v) || 0; }
+function fmt(n){ return Number(n || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function fmtInt(n){ return Number(n || 0).toLocaleString('es-MX'); }
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+function byId(id){ return document.getElementById(id); }
+function eq(a,b){ return String(a) === String(b); }
+function dias(fecha){
+  if(!fecha) return 0;
+  const ms = Date.now() - new Date(fecha + 'T12:00:00').getTime();
+  return Math.floor(ms / 86400000);
+}
+function fechaVencimiento(fechaVenta, plazo){
+  const vence = new Date((fechaVenta || today()) + 'T12:00:00');
+  vence.setDate(vence.getDate() + parseInt(plazo || 0, 10));
+  return vence;
+}
+function fechaVencimientoISO(fechaVenta, plazo){
+  return fechaVencimiento(fechaVenta, plazo).toISOString().split('T')[0];
+}
+function diasHastaVencer(fechaVenta, plazo){
+  const vence = fechaVencimiento(fechaVenta, plazo);
+  return Math.floor((vence.getTime() - Date.now()) / 86400000);
+}
+function formatDate(fecha){
+  if(!fecha) return '—';
+  const d = new Date(fecha + (String(fecha).includes('T') ? '' : 'T12:00:00'));
+  if(isNaN(d.getTime())) return fecha;
+  return d.toLocaleDateString('es-MX');
+}
+function scoreBand(total){
+  if(total >= 80) return 'A';
+  if(total >= 50) return 'B';
+  return 'C';
+}
+function semaforo(v, meta, tipo){
+  if(tipo === 'max') return v <= meta ? 'sem-green' : v <= meta * 1.2 ? 'sem-yellow' : 'sem-red';
+  return v >= meta ? 'sem-green' : v >= meta * 0.8 ? 'sem-yellow' : 'sem-red';
+}
+function semaforoIcon(cls){ return cls === 'sem-green' ? '🟢' : cls === 'sem-yellow' ? '🟡' : '🔴'; }
+function pagosDeCuenta(cuentaId){ return pagos.filter(p => eq(p.cuenta, cuentaId)); }
+function totalPagadoCuenta(cuentaId){ return pagosDeCuenta(cuentaId).reduce((t,p) => t + num(p.monto), 0); }
+function saldoCuentaId(cuentaId){
+  const c = cuentas.find(x => eq(x.id, cuentaId));
+  if(!c) return 0;
+  return Math.max(num(c.monto) - totalPagadoCuenta(c.id), 0);
+}
+function saldoCuenta(c){ return c ? saldoCuentaId(c.id) : 0; }
+function estaLiquidada(cuentaId){ return saldoCuentaId(cuentaId) <= 0.009; }
+function ultimaFechaPagoCuenta(cuentaId){
+  const lista = pagosDeCuenta(cuentaId).sort((a,b) => String(a.fecha).localeCompare(String(b.fecha)));
+  return lista.length ? lista[lista.length - 1].fecha : '';
+}
+function ticketPromedioCliente(clienteId){
+  const lista = cuentas.filter(c => eq(c.cliente, clienteId));
+  if(!lista.length) return 0;
+  return lista.reduce((t,c) => t + num(c.monto), 0) / lista.length;
+}
+function cuentasLiquidadasATiempo(clienteId){
+  return cuentas.filter(c => eq(c.cliente, clienteId)).filter(c => {
+    if(!estaLiquidada(c.id)) return false;
+    const ultima = ultimaFechaPagoCuenta(c.id);
+    if(!ultima) return false;
+    return new Date(ultima + 'T12:00:00') <= fechaVencimiento(c.fecha, c.credito);
+  }).length;
+}
+function syncPromesasCuenta(cuentaId){
+  const liquidada = estaLiquidada(cuentaId);
+  const fechaUlt = ultimaFechaPagoCuenta(cuentaId) || today();
+  promesas.filter(p => eq(p.cuenta, cuentaId)).forEach(p => {
+    if(liquidada && !p.cumplido){
+      p.cumplido = true;
+      p.autoCumplida = true;
+      p.fechaCumplido = fechaUlt;
+    } else if(!liquidada && p.autoCumplida){
+      p.cumplido = false;
+      p.autoCumplida = false;
+      p.fechaCumplido = '';
+    }
+  });
+}
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  NAV                                                             ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function nav(page){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  document.querySelectorAll('nav a').forEach(a=>{
-    if(a.getAttribute('onclick')&&a.getAttribute('onclick').includes(page)) a.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  byId('page-' + page).classList.add('active');
+  document.querySelectorAll('nav a').forEach(a => {
+    if((a.getAttribute('onclick') || '').includes(page)) a.classList.add('active');
   });
   renderPage(page);
 }
-
 function renderPage(p){
-  if(p==='dashboard')   renderDashboard();
-  if(p==='clientes')    renderClientes();
-  if(p==='scoring')     renderScoring();
-  if(p==='cuentas')     renderCuentas();
-  if(p==='promesas')    renderPromesas();
-  if(p==='cobranza')    renderCobranza();
-  if(p==='reglas')      renderReglas();
-  if(p==='costos')      renderCostos();
+  if(p === 'dashboard') renderDashboard();
+  if(p === 'clientes') renderClientes();
+  if(p === 'scoring') renderScoring();
+  if(p === 'cuentas') renderCuentas();
+  if(p === 'promesas') renderPromesas();
+  if(p === 'cobranza') renderCobranza();
+  if(p === 'reglas') renderReglas();
+  if(p === 'costos') renderCostos();
+}
+function renderAll(){
+  poblarSelects();
+  renderDashboard();
+  renderClientes();
+  renderScoring();
+  renderCuentas();
+  renderPromesas();
+  renderCobranza();
+  renderReglas();
+  renderCostos();
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  UTILIDADES                                                      ║
-// ╚══════════════════════════════════════════════════════════════════╝
-function dias(fecha){
-  if(!fecha) return 0;
-  return Math.floor((Date.now() - new Date(fecha).getTime()) / 86400000);
+function setSlider(id, value, numId){
+  byId(id).value = value;
+  byId(numId).textContent = value;
 }
-function diasHastaVencer(fechaVenta, plazo){
-  const vence = new Date(fechaVenta);
-  vence.setDate(vence.getDate() + parseInt(plazo||30));
-  return Math.floor((vence.getTime() - Date.now()) / 86400000);
-}
-function fmt(n){ return Number(n||0).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function toast(msg){
-  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2800);
-}
-function today(){ return new Date().toISOString().split('T')[0]; }
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  SCORE                                                           ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function updScore(el, numId){
-  document.getElementById(numId).textContent = el.value;
+  byId(numId).textContent = el.value;
   recalcScore();
 }
 function recalcScore(){
-  const total = +sc('sc-antiguedad') + +sc('sc-referencias') + +sc('sc-historial') +
-                +sc('sc-ticket') + +sc('sc-riesgo') + +sc('sc-garantias');
-  document.getElementById('sc-total-num').textContent = total;
-  let banda = total>=80?'A':total>=60?'B':'C';
-  const bandEl = document.getElementById('sc-band');
-  bandEl.textContent = 'Banda '+banda;
-  bandEl.className = 'score-band badge-'+banda;
-  const bar = document.getElementById('sc-bar');
-  bar.style.width = total+'%';
-  bar.style.background = total>=80?'var(--good)':total>=60?'var(--warn)':'var(--danger)';
-  const nivelTextos = {A:'Excelente — hasta 45 días',B:'Moderado — hasta 30 días',C:'Alto riesgo — BLOQUEADO'};
-  document.getElementById('sc-nivel-texto').textContent = nivelTextos[banda];
-}
-function sc(id){ const el=document.getElementById(id); return el?el.value:0; }
-
-function guardarScore(){
-  const clienteId = document.getElementById('score-cliente').value;
-  if(!clienteId){ toast('⚠️ Selecciona un cliente'); return; }
-  const total = +sc('sc-antiguedad') + +sc('sc-referencias') + +sc('sc-historial') +
-                +sc('sc-ticket') + +sc('sc-riesgo') + +sc('sc-garantias');
-  const banda = total>=80?'A':total>=60?'B':'C';
-  const idx = scores.findIndex(s=>s.cliente==clienteId);
-  const scoreObj = { cliente:clienteId, total, banda, fecha:today() };
-  if(idx>=0) scores[idx]=scoreObj; else scores.push(scoreObj);
-  save('scores',scores);
-  toast('✅ Score guardado — Banda '+banda);
-  renderScoring();
-}
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  NIVEL DE CRÉDITO — Motor de decisión                           ║
-// ╚══════════════════════════════════════════════════════════════════╝
-function nivelCredito(clienteId){
-  const score = scores.find(s=>s.cliente==clienteId);
-  const pagosCliente = pagos.filter(p=>p.cliente==clienteId);
-  // Bloqueo por vencida >60 días
-  const tieneVencida = cuentas.some(c=>c.cliente==clienteId && !estaLiquidada(c.id) && diasHastaVencer(c.fecha,c.credito)<-0);
-  const diasMax = cuentas.filter(c=>c.cliente==clienteId && !estaLiquidada(c.id))
-                         .reduce((mx,c)=> Math.max(mx, -diasHastaVencer(c.fecha,c.credito)), 0);
-  if(diasMax>60) return {dias:0, motivo:'Cartera vencida >60 días'};
-  if(!score) return {dias:15, motivo:'Sin score — mínimo por default'};
-  if(score.banda==='C') return {dias:0, motivo:'Banda C — cliente bloqueado'};
-  if(score.banda==='A' && score.total>=80) return {dias:45, motivo:'Banda A — máximo habilitado'};
-  if(pagosCliente.length>=2) return {dias:30, motivo:'Banda B con historial positivo'};
-  return {dias:15, motivo:'Banda B — inicio de relación'};
-}
-
-function estaLiquidada(cuentaId){
-  return pagos.some(p=>p.cuenta==cuentaId && p.liquidado);
-}
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  CLIENTES                                                        ║
-// ╚══════════════════════════════════════════════════════════════════╝
-function guardarCliente(){
-  const nombre = document.getElementById('cli-nombre').value.trim();
-  if(!nombre){ toast('⚠️ El nombre es obligatorio'); return; }
-  const c = {
-    id: Date.now(),
-    nombre,
-    rfc:     document.getElementById('cli-rfc').value.trim(),
-    tel:     document.getElementById('cli-tel').value.trim(),
-    lugar:   document.getElementById('cli-lugar').value.trim(),
-    cultivo: document.getElementById('cli-cultivo').value.trim(),
-    ha:      document.getElementById('cli-ha').value,
-    obs:     document.getElementById('cli-obs').value.trim(),
-    creado:  today()
+  const total = num(byId('sc-antiguedad').value) + num(byId('sc-referencias').value) + num(byId('sc-historial').value) + num(byId('sc-ticket').value) + num(byId('sc-riesgo').value) + num(byId('sc-garantias').value);
+  const banda = scoreBand(total);
+  const bar = byId('sc-bar');
+  const textos = {
+    A: 'Excelente — hasta 45 días',
+    B: 'Moderado — 15 a 30 días',
+    C: 'Alto riesgo — bloqueado por score < 50'
   };
-  clientes.push(c);
-  save('clientes',clientes);
-  // limpiar
-  ['cli-nombre','cli-rfc','cli-tel','cli-lugar','cli-cultivo','cli-ha','cli-obs'].forEach(id=>{ document.getElementById(id).value=''; });
-  toast('✅ Cliente registrado');
-  renderClientes();
+  byId('sc-total-num').textContent = total;
+  byId('sc-band').textContent = 'Banda ' + banda;
+  byId('sc-band').className = 'score-band badge-' + banda;
+  byId('sc-nivel-texto').textContent = textos[banda];
+  bar.style.width = total + '%';
+  bar.style.background = banda === 'A' ? 'var(--good)' : banda === 'B' ? 'var(--warn)' : 'var(--danger)';
+}
+function limpiarScoreForm(){
+  setSlider('sc-antiguedad', 0, 'sc-ant-num');
+  setSlider('sc-referencias', 0, 'sc-ref-num');
+  setSlider('sc-historial', 0, 'sc-his-num');
+  setSlider('sc-ticket', 0, 'sc-tck-num');
+  setSlider('sc-riesgo', 0, 'sc-rie-num');
+  setSlider('sc-garantias', 0, 'sc-gar-num');
+  recalcScore();
+}
+function cargarScoreEnFormulario(score){
+  setSlider('sc-antiguedad', score.antiguedad || 0, 'sc-ant-num');
+  setSlider('sc-referencias', score.referencias || 0, 'sc-ref-num');
+  setSlider('sc-historial', score.historial || 0, 'sc-his-num');
+  setSlider('sc-ticket', score.ticket || 0, 'sc-tck-num');
+  setSlider('sc-riesgo', score.riesgo || 0, 'sc-rie-num');
+  setSlider('sc-garantias', score.garantias || 0, 'sc-gar-num');
+  recalcScore();
+}
+function onScoreClienteChange(){
+  if(editing.score) return;
+  const clienteId = byId('score-cliente').value;
+  const existente = scores.find(s => eq(s.cliente, clienteId));
+  if(existente) cargarScoreEnFormulario(existente);
+  else limpiarScoreForm();
+}
+function guardarScore(){
+  const clienteId = byId('score-cliente').value;
+  if(!clienteId){ toast('⚠️ Selecciona un cliente'); return; }
+  const scoreObj = {
+    id: editing.score || (scores.find(s => eq(s.cliente, clienteId))?.id) || Date.now(),
+    cliente: clienteId,
+    antiguedad: num(byId('sc-antiguedad').value),
+    referencias: num(byId('sc-referencias').value),
+    historial: num(byId('sc-historial').value),
+    ticket: num(byId('sc-ticket').value),
+    riesgo: num(byId('sc-riesgo').value),
+    garantias: num(byId('sc-garantias').value)
+  };
+  scoreObj.total = scoreObj.antiguedad + scoreObj.referencias + scoreObj.historial + scoreObj.ticket + scoreObj.riesgo + scoreObj.garantias;
+  scoreObj.banda = scoreBand(scoreObj.total);
+  scoreObj.fecha = today();
+
+  const idx = scores.findIndex(s => eq(s.id, scoreObj.id) || eq(s.cliente, clienteId));
+  if(idx >= 0) scores[idx] = scoreObj; else scores.push(scoreObj);
+  save('scores', scores);
+  toast('✅ Score guardado — Banda ' + scoreObj.banda);
+  cancelarEdicionScore(false);
+  renderAll();
+}
+function editarScore(id){
+  const score = scores.find(s => eq(s.id, id));
+  if(!score) return;
+  editing.score = score.id;
+  byId('score-form-title').textContent = 'Editar Score';
+  byId('btn-score-guardar').textContent = 'Actualizar Score';
+  byId('score-cliente').value = score.cliente;
+  cargarScoreEnFormulario(score);
+  nav('scoring');
+}
+function eliminarScore(id){
+  if(!confirm('¿Eliminar este score?')) return;
+  scores = scores.filter(s => !eq(s.id, id));
+  save('scores', scores);
+  if(eq(editing.score, id)) cancelarEdicionScore(false);
+  toast('🗑️ Score eliminado');
+  renderAll();
+}
+function cancelarEdicionScore(resetSelect = true){
+  editing.score = null;
+  byId('score-form-title').textContent = 'Calcular Score';
+  byId('btn-score-guardar').textContent = '💾 Guardar Score';
+  if(resetSelect) byId('score-cliente').value = '';
+  limpiarScoreForm();
 }
 
+function nivelCredito(clienteId){
+  const score = scores.find(s => eq(s.cliente, clienteId));
+  const diasMoraMax = cuentas
+    .filter(c => eq(c.cliente, clienteId) && !estaLiquidada(c.id))
+    .reduce((mx, c) => Math.max(mx, Math.max(0, -diasHastaVencer(c.fecha, c.credito))), 0);
+  if(diasMoraMax > 60) return { dias: 0, motivo: 'Cartera vencida >60 días', limiteMonto: 0 };
+  if(!score) return { dias: 15, motivo: 'Sin score — mínimo por default', limiteMonto: 0 };
+  if(score.total < 50 || score.banda === 'C') return { dias: 0, motivo: 'Banda C — cliente bloqueado por score <50', limiteMonto: 0 };
+
+  const ticketProm = ticketPromedioCliente(clienteId);
+  const pagosATiempo = cuentasLiquidadasATiempo(clienteId);
+  if(score.banda === 'A') return { dias: 45, motivo: 'Banda A — máximo habilitado', limiteMonto: ticketProm ? ticketProm * 3 : 0 };
+  if(pagosATiempo >= 2) return { dias: 30, motivo: 'Banda B con historial positivo', limiteMonto: ticketProm ? ticketProm * 1.5 : 0 };
+  return { dias: 15, motivo: 'Banda B — inicio de relación', limiteMonto: ticketProm ? ticketProm * 1.5 : 0 };
+}
+
+function guardarCliente(){
+  const nombre = byId('cli-nombre').value.trim();
+  if(!nombre){ toast('⚠️ El nombre es obligatorio'); return; }
+  const obj = {
+    id: editing.cliente || Date.now(),
+    nombre,
+    rfc: byId('cli-rfc').value.trim(),
+    tel: byId('cli-tel').value.trim(),
+    lugar: byId('cli-lugar').value.trim(),
+    cultivo: byId('cli-cultivo').value.trim(),
+    ha: byId('cli-ha').value,
+    obs: byId('cli-obs').value.trim(),
+    creado: today()
+  };
+  const idx = clientes.findIndex(c => eq(c.id, obj.id));
+  if(idx >= 0) clientes[idx] = { ...clientes[idx], ...obj };
+  else clientes.push(obj);
+  save('clientes', clientes);
+  toast(idx >= 0 ? '✅ Cliente actualizado' : '✅ Cliente registrado');
+  cancelarEdicionCliente(false);
+  renderAll();
+}
+function editarCliente(id){
+  const c = clientes.find(x => eq(x.id, id));
+  if(!c) return;
+  editing.cliente = c.id;
+  byId('cliente-form-title').textContent = 'Editar Cliente';
+  byId('btn-cliente-guardar').textContent = 'Actualizar Cliente';
+  byId('cli-nombre').value = c.nombre || '';
+  byId('cli-rfc').value = c.rfc || '';
+  byId('cli-tel').value = c.tel || '';
+  byId('cli-lugar').value = c.lugar || '';
+  byId('cli-cultivo').value = c.cultivo || '';
+  byId('cli-ha').value = c.ha || '';
+  byId('cli-obs').value = c.obs || '';
+  nav('clientes');
+}
 function eliminarCliente(id){
-  if(!confirm('¿Eliminar este cliente?')) return;
-  clientes = clientes.filter(c=>c.id!=id);
-  save('clientes',clientes);
-  renderClientes();
+  const cuentasRel = cuentas.filter(c => eq(c.cliente, id)).map(c => c.id);
+  const totalRel = cuentasRel.length;
+  const pagosRel = pagos.filter(p => eq(p.cliente, id) || cuentasRel.some(cid => eq(cid, p.cuenta))).length;
+  const promesasRel = promesas.filter(p => eq(p.cliente, id) || cuentasRel.some(cid => eq(cid, p.cuenta))).length;
+  const msg = totalRel || pagosRel || promesasRel
+    ? `Este cliente tiene ${totalRel} cuenta(s), ${promesasRel} promesa(s) y ${pagosRel} pago(s) relacionados. Se borrará todo en cascada. ¿Continuar?`
+    : '¿Eliminar este cliente?';
+  if(!confirm(msg)) return;
+
+  clientes = clientes.filter(c => !eq(c.id, id));
+  scores = scores.filter(s => !eq(s.cliente, id));
+  pagos = pagos.filter(p => !eq(p.cliente, id) && !cuentasRel.some(cid => eq(cid, p.cuenta)));
+  promesas = promesas.filter(p => !eq(p.cliente, id) && !cuentasRel.some(cid => eq(cid, p.cuenta)));
+  cuentas = cuentas.filter(c => !eq(c.cliente, id));
+  persistAll();
+  if(eq(editing.cliente, id)) cancelarEdicionCliente(false);
+  toast('🗑️ Cliente y registros relacionados eliminados');
+  renderAll();
+}
+function cancelarEdicionCliente(reset = true){
+  editing.cliente = null;
+  byId('cliente-form-title').textContent = 'Nuevo Cliente';
+  byId('btn-cliente-guardar').textContent = 'Guardar Cliente';
+  if(reset){
+    ['cli-nombre','cli-rfc','cli-tel','cli-lugar','cli-cultivo','cli-ha','cli-obs'].forEach(id => byId(id).value = '');
+  }
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  CUENTAS                                                         ║
-// ╚══════════════════════════════════════════════════════════════════╝
+function validarCuentaCliente(){
+  const id = byId('cta-cliente').value;
+  if(!id){ byId('cta-validacion').innerHTML = ''; return; }
+  const nivel = nivelCredito(id);
+  if(nivel.dias === 0){
+    byId('cta-validacion').innerHTML = `<div class="alert alert-danger">🚫 ${nivel.motivo} — No se puede otorgar crédito</div>`;
+  } else {
+    byId('cta-validacion').innerHTML = `<div class="alert alert-good">✅ Crédito habilitado hasta <strong>${nivel.dias} días</strong> — ${nivel.motivo}${nivel.limiteMonto ? `<br>Referencia de monto histórico: hasta $${fmt(nivel.limiteMonto)}` : ''}</div>`;
+  }
+}
 function guardarCuenta(){
-  const clienteId = document.getElementById('cta-cliente').value;
-  const monto = parseFloat(document.getElementById('cta-monto').value);
-  const fecha = document.getElementById('cta-fecha').value;
-  const credito = parseInt(document.getElementById('cta-credito').value);
-  if(!clienteId||!monto||!fecha||!credito){ toast('⚠️ Completa todos los campos obligatorios'); return; }
-  if(monto<=0){ toast('⚠️ El monto debe ser mayor a cero'); return; }
-
-  // Validar política
+  const clienteId = byId('cta-cliente').value;
+  const monto = num(byId('cta-monto').value);
+  const fecha = byId('cta-fecha').value;
+  const credito = parseInt(byId('cta-credito').value || '0', 10);
+  if(!clienteId || !monto || !fecha || !credito){ toast('⚠️ Completa todos los campos obligatorios'); return; }
+  if(monto <= 0){ toast('⚠️ El monto debe ser mayor a cero'); return; }
   const nivel = nivelCredito(clienteId);
-  if(nivel.dias===0){ toast('🚫 '+nivel.motivo+' — crédito bloqueado'); return; }
-  if(credito>nivel.dias){
-    if(!confirm(`⚠️ El sistema recomienda máximo ${nivel.dias} días para este cliente. ¿Deseas continuar con ${credito} días? (requiere aprobación gerencia)`)) return;
+  if(nivel.dias === 0){ toast('🚫 ' + nivel.motivo + ' — crédito bloqueado'); return; }
+  if(credito > nivel.dias){
+    if(!confirm(`⚠️ El sistema recomienda máximo ${nivel.dias} días para este cliente. ¿Deseas continuar con ${credito} días?`)) return;
+  }
+  if(nivel.limiteMonto && monto > nivel.limiteMonto){
+    if(!confirm(`⚠️ El monto excede la referencia histórica de $${fmt(nivel.limiteMonto)}. ¿Deseas continuar?`)) return;
   }
 
-  const cuenta = {
-    id: Date.now(),
+  const obj = {
+    id: editing.cuenta || Date.now(),
     cliente: clienteId,
     monto,
     fecha,
     credito,
-    folio:    document.getElementById('cta-folio').value.trim(),
-    producto: document.getElementById('cta-producto').value.trim(),
-    ciclo:    document.getElementById('cta-ciclo').value
+    folio: byId('cta-folio').value.trim(),
+    producto: byId('cta-producto').value.trim(),
+    ciclo: byId('cta-ciclo').value,
+    creado: today()
   };
-  cuentas.push(cuenta);
-  save('cuentas',cuentas);
-  ['cta-monto','cta-folio','cta-producto'].forEach(id=>{ document.getElementById(id).value=''; });
-  toast('✅ Cuenta registrada');
-  renderCuentas();
+  const idx = cuentas.findIndex(c => eq(c.id, obj.id));
+  if(idx >= 0) cuentas[idx] = { ...cuentas[idx], ...obj };
+  else cuentas.push(obj);
+  save('cuentas', cuentas);
+  syncPromesasCuenta(obj.id);
+  save('promesas', promesas);
+  toast(idx >= 0 ? '✅ Cuenta actualizada' : '✅ Cuenta registrada');
+  cancelarEdicionCuenta(false);
+  renderAll();
 }
-
-function validarCuentaCliente(){
-  const id = document.getElementById('cta-cliente').value;
-  if(!id) return;
-  const nivel = nivelCredito(id);
-  const div = document.getElementById('cta-validacion');
-  if(nivel.dias===0){
-    div.innerHTML = `<div class="alert alert-danger">🚫 ${nivel.motivo} — No se puede otorgar crédito</div>`;
-  } else {
-    div.innerHTML = `<div class="alert alert-good">✅ Crédito habilitado hasta <strong>${nivel.dias} días</strong> — ${nivel.motivo}</div>`;
+function editarCuenta(id){
+  const c = cuentas.find(x => eq(x.id, id));
+  if(!c) return;
+  editing.cuenta = c.id;
+  byId('cuenta-form-title').textContent = 'Editar Cuenta';
+  byId('btn-cuenta-guardar').textContent = 'Actualizar Cuenta';
+  byId('cta-cliente').value = c.cliente;
+  byId('cta-monto').value = c.monto;
+  byId('cta-folio').value = c.folio || '';
+  byId('cta-fecha').value = c.fecha || today();
+  byId('cta-credito').value = c.credito;
+  byId('cta-producto').value = c.producto || '';
+  byId('cta-ciclo').value = c.ciclo || '';
+  validarCuentaCliente();
+  nav('cuentas');
+}
+function eliminarCuenta(id){
+  const pagosRel = pagos.filter(p => eq(p.cuenta, id)).length;
+  const promesasRel = promesas.filter(p => eq(p.cuenta, id)).length;
+  const msg = pagosRel || promesasRel
+    ? `Esta cuenta tiene ${promesasRel} promesa(s) y ${pagosRel} pago(s) relacionados. Se borrará todo en cascada. ¿Continuar?`
+    : '¿Eliminar esta cuenta?';
+  if(!confirm(msg)) return;
+  cuentas = cuentas.filter(c => !eq(c.id, id));
+  promesas = promesas.filter(p => !eq(p.cuenta, id));
+  pagos = pagos.filter(p => !eq(p.cuenta, id));
+  persistAll();
+  if(eq(editing.cuenta, id)) cancelarEdicionCuenta(false);
+  toast('🗑️ Cuenta eliminada');
+  renderAll();
+}
+function cancelarEdicionCuenta(reset = true){
+  editing.cuenta = null;
+  byId('cuenta-form-title').textContent = 'Registrar Cuenta';
+  byId('btn-cuenta-guardar').textContent = 'Registrar Cuenta';
+  byId('cta-validacion').innerHTML = '';
+  if(reset){
+    byId('cta-cliente').value = '';
+    byId('cta-monto').value = '';
+    byId('cta-folio').value = '';
+    byId('cta-fecha').value = today();
+    byId('cta-credito').value = '';
+    byId('cta-producto').value = '';
+    byId('cta-ciclo').value = '';
   }
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  PROMESAS DE PAGO                                                ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function guardarPromesa(){
-  const cuentaId = document.getElementById('ptp-cuenta').value;
-  const fecha = document.getElementById('ptp-fecha').value;
-  if(!cuentaId||!fecha){ toast('⚠️ Selecciona cuenta y fecha'); return; }
-  // Verificar si ya tiene promesa activa
-  const existente = promesas.find(p=>p.cuenta==cuentaId && !p.cumplido);
-  if(existente && !confirm('Ya existe una promesa activa para esta cuenta. ¿Reemplazar?')) return;
-  if(existente){ promesas = promesas.filter(p=>!(p.cuenta==cuentaId && !p.cumplido)); }
-
-  const cuenta = cuentas.find(c=>c.id==cuentaId);
-  promesas.push({
-    id: Date.now(),
+  const cuentaId = byId('ptp-cuenta').value;
+  const fecha = byId('ptp-fecha').value;
+  if(!cuentaId || !fecha){ toast('⚠️ Selecciona cuenta y fecha'); return; }
+  const cuenta = cuentas.find(c => eq(c.id, cuentaId));
+  if(!cuenta){ toast('⚠️ Cuenta no encontrada'); return; }
+  if(!editing.promesa){
+    const existente = promesas.find(p => eq(p.cuenta, cuentaId) && !p.cumplido);
+    if(existente && !confirm('Ya existe una promesa activa para esta cuenta. ¿Deseas guardarla de todas formas?')) return;
+  }
+  const obj = {
+    id: editing.promesa || Date.now(),
     cuenta: cuentaId,
-    cliente: cuenta?.cliente,
-    montoComprometido: parseFloat(document.getElementById('ptp-monto').value)||0,
+    cliente: cuenta.cliente,
+    montoComprometido: num(byId('ptp-monto').value) || saldoCuentaId(cuentaId),
     fecha,
-    canal: document.getElementById('ptp-canal').value,
-    notas: document.getElementById('ptp-notas').value.trim(),
+    canal: byId('ptp-canal').value,
+    notas: byId('ptp-notas').value.trim(),
     cumplido: false,
+    autoCumplida: false,
+    fechaCumplido: '',
     creado: today()
-  });
-  save('promesas',promesas);
-  toast('✅ Promesa registrada');
-  renderPromesas();
+  };
+  const idx = promesas.findIndex(p => eq(p.id, obj.id));
+  if(idx >= 0) promesas[idx] = { ...promesas[idx], ...obj };
+  else promesas.push(obj);
+  save('promesas', promesas);
+  toast(idx >= 0 ? '✅ Promesa actualizada' : '✅ Promesa registrada');
+  cancelarEdicionPromesa(false);
+  renderAll();
 }
-
+function editarPromesa(id){
+  const p = promesas.find(x => eq(x.id, id));
+  if(!p) return;
+  editing.promesa = p.id;
+  byId('promesa-form-title').textContent = 'Editar Promesa';
+  byId('btn-promesa-guardar').textContent = 'Actualizar Promesa';
+  byId('ptp-cuenta').value = p.cuenta;
+  byId('ptp-monto').value = p.montoComprometido || '';
+  byId('ptp-fecha').value = p.fecha || today();
+  byId('ptp-canal').value = p.canal || 'Llamada';
+  byId('ptp-notas').value = p.notas || '';
+  nav('promesas');
+}
 function cumplirPromesa(id){
-  const p = promesas.find(x=>x.id==id||x.cuenta==id);
+  const p = promesas.find(x => eq(x.id, id));
   if(!p) return;
   p.cumplido = true;
+  p.autoCumplida = false;
   p.fechaCumplido = today();
-  save('promesas',promesas);
+  save('promesas', promesas);
   toast('✅ Promesa marcada como cumplida');
-  renderPromesas();
-  renderDashboard();
+  renderAll();
+}
+function eliminarPromesa(id){
+  if(!confirm('¿Eliminar esta promesa?')) return;
+  promesas = promesas.filter(p => !eq(p.id, id));
+  save('promesas', promesas);
+  if(eq(editing.promesa, id)) cancelarEdicionPromesa(false);
+  toast('🗑️ Promesa eliminada');
+  renderAll();
+}
+function cancelarEdicionPromesa(reset = true){
+  editing.promesa = null;
+  byId('promesa-form-title').textContent = 'Nueva Promesa';
+  byId('btn-promesa-guardar').textContent = 'Registrar Promesa';
+  if(reset){
+    byId('ptp-cuenta').value = '';
+    byId('ptp-monto').value = '';
+    byId('ptp-fecha').value = today();
+    byId('ptp-canal').value = 'Llamada';
+    byId('ptp-notas').value = '';
+  }
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  PAGOS                                                           ║
-// ╚══════════════════════════════════════════════════════════════════╝
-function registrarPago(){
-  const cuentaId = document.getElementById('pago-cuenta').value;
-  const monto = parseFloat(document.getElementById('pago-monto').value);
-  const fecha = document.getElementById('pago-fecha').value || today();
-  if(!cuentaId||!monto){ toast('⚠️ Selecciona cuenta e ingresa el monto'); return; }
-  const cuenta = cuentas.find(c=>c.id==cuentaId);
-  if(!cuenta){ toast('Cuenta no encontrada'); return; }
-  const pago = {
-    id: Date.now(),
+function guardarPago(){
+  const cuentaId = byId('pago-cuenta').value;
+  const monto = num(byId('pago-monto').value);
+  const fecha = byId('pago-fecha').value || today();
+  if(!cuentaId || !monto){ toast('⚠️ Selecciona cuenta e ingresa el monto'); return; }
+  const cuenta = cuentas.find(c => eq(c.id, cuentaId));
+  if(!cuenta){ toast('⚠️ Cuenta no encontrada'); return; }
+
+  const existing = pagos.find(p => eq(p.id, editing.pago));
+  const oldCuentaId = existing ? existing.cuenta : null;
+  const obj = {
+    id: editing.pago || Date.now(),
     cuenta: cuentaId,
     cliente: cuenta.cliente,
     monto,
     fecha,
-    forma: document.getElementById('pago-forma').value,
-    ref: document.getElementById('pago-ref').value.trim(),
-    notas: document.getElementById('pago-notas').value.trim()
+    forma: byId('pago-forma').value,
+    ref: byId('pago-ref').value.trim(),
+    notas: byId('pago-notas').value.trim(),
+    creado: today()
   };
-  // Liquidar si el pago cubre el monto total
-  const totalPagado = pagos.filter(p=>p.cuenta==cuentaId).reduce((a,b)=>a+b.monto,0) + monto;
-  if(totalPagado >= cuenta.monto){
-    pago.liquidado = true;
-    // Marcar promesas como cumplidas
-    promesas.filter(p=>p.cuenta==cuentaId && !p.cumplido).forEach(p=>{ p.cumplido=true; p.fechaCumplido=today(); });
-    save('promesas',promesas);
-    toast(`✅ Cuenta LIQUIDADA — $${fmt(totalPagado)} pagados`);
-  } else {
-    toast(`✅ Pago parcial registrado — Resta $${fmt(cuenta.monto-totalPagado)}`);
+  const idx = pagos.findIndex(p => eq(p.id, obj.id));
+  if(idx >= 0) pagos[idx] = { ...pagos[idx], ...obj };
+  else pagos.push(obj);
+  save('pagos', pagos);
+  if(oldCuentaId && !eq(oldCuentaId, cuentaId)) syncPromesasCuenta(oldCuentaId);
+  syncPromesasCuenta(cuentaId);
+  save('promesas', promesas);
+
+  const saldo = saldoCuentaId(cuentaId);
+  toast(idx >= 0
+    ? `✅ Pago actualizado — saldo actual $${fmt(saldo)}`
+    : saldo <= 0.009
+      ? '✅ Pago registrado — cuenta liquidada'
+      : `✅ Pago registrado — resta $${fmt(saldo)}`
+  );
+  cancelarEdicionPago(false);
+  renderAll();
+}
+function editarPago(id){
+  const p = pagos.find(x => eq(x.id, id));
+  if(!p) return;
+  editing.pago = p.id;
+  byId('pago-form-title').textContent = 'Editar Pago';
+  byId('btn-pago-guardar').textContent = 'Actualizar Pago';
+  byId('pago-cuenta').value = p.cuenta;
+  byId('pago-monto').value = p.monto || '';
+  byId('pago-forma').value = p.forma || 'Transferencia';
+  byId('pago-fecha').value = p.fecha || today();
+  byId('pago-ref').value = p.ref || '';
+  byId('pago-notas').value = p.notas || '';
+  nav('cobranza');
+}
+function eliminarPago(id){
+  const pago = pagos.find(p => eq(p.id, id));
+  if(!pago) return;
+  if(!confirm('¿Eliminar este pago del historial?')) return;
+  pagos = pagos.filter(p => !eq(p.id, id));
+  save('pagos', pagos);
+  syncPromesasCuenta(pago.cuenta);
+  save('promesas', promesas);
+  if(eq(editing.pago, id)) cancelarEdicionPago(false);
+  toast('🗑️ Pago eliminado');
+  renderAll();
+}
+function cancelarEdicionPago(reset = true){
+  editing.pago = null;
+  byId('pago-form-title').textContent = 'Registrar Pago';
+  byId('btn-pago-guardar').textContent = '✅ Registrar Pago';
+  if(reset){
+    byId('pago-cuenta').value = '';
+    byId('pago-monto').value = '';
+    byId('pago-forma').value = 'Transferencia';
+    byId('pago-fecha').value = today();
+    byId('pago-ref').value = '';
+    byId('pago-notas').value = '';
   }
-  pagos.push(pago);
-  save('pagos',pagos);
-  ['pago-monto','pago-ref','pago-notas'].forEach(id=>{ document.getElementById(id).value=''; });
-  renderCobranza();
-  renderDashboard();
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  COSTOS                                                          ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function guardarCostos(){
   costos = {
-    horas:        parseFloat(document.getElementById('cost-horas').value)||0,
-    viaticos:     parseFloat(document.getElementById('cost-viaticos').value)||0,
-    comunicacion: parseFloat(document.getElementById('cost-comunicacion').value)||0,
-    admin:        parseFloat(document.getElementById('cost-admin').value)||0
+    horas: num(byId('cost-horas').value),
+    viaticos: num(byId('cost-viaticos').value),
+    comunicacion: num(byId('cost-comunicacion').value),
+    admin: num(byId('cost-admin').value)
   };
-  save('costos',costos);
+  save('costos', costos);
   toast('✅ Costos guardados');
   renderCostos();
 }
-function calcCostos(){ renderCostos(); }
-
-function calcularCostToCollect(){
-  const totalCost = (costos.horas||0)+(costos.viaticos||0)+(costos.comunicacion||0)+(costos.admin||0);
-  const recuperado = pagos.reduce((t,p)=>t+(p.monto||0),0);
-  const ratio = recuperado>0 ? (totalCost/recuperado)*100 : 0;
-  return {totalCost, recuperado, ratio};
+function calcCostos(){ renderCostos(false); }
+function calcularCostToCollect(useInputs = false){
+  const fuente = useInputs
+    ? {
+        horas: num(byId('cost-horas').value),
+        viaticos: num(byId('cost-viaticos').value),
+        comunicacion: num(byId('cost-comunicacion').value),
+        admin: num(byId('cost-admin').value)
+      }
+    : costos;
+  const totalCost = num(fuente.horas) + num(fuente.viaticos) + num(fuente.comunicacion) + num(fuente.admin);
+  const recuperado = pagos.reduce((t,p) => t + num(p.monto), 0);
+  const ratio = recuperado > 0 ? totalCost / recuperado : 0;
+  return { totalCost, recuperado, ratio };
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  KPIs                                                            ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function calcularKPIs(){
-  const activas = cuentas.filter(c=>!estaLiquidada(c.id));
-  const total = activas.reduce((a,b)=>a+b.monto,0);
-
-  // DSO: Promedio ponderado de días desde venta
-  const dso = activas.length
-    ? activas.reduce((a,b)=>a+Math.max(0,dias(b.fecha)),0)/activas.length
+  const activas = cuentas
+    .map(c => ({ ...c, pagado: totalPagadoCuenta(c.id), saldo: saldoCuenta(c) }))
+    .filter(c => c.saldo > 0.009);
+  const totalSaldo = activas.reduce((a,b) => a + b.saldo, 0);
+  const edadPromedio = totalSaldo
+    ? activas.reduce((a,b) => a + Math.max(0, dias(b.fecha)) * b.saldo, 0) / totalSaldo
     : 0;
-
-  // % cartera vencida >60 días (después de plazo)
-  const vencida60 = activas.filter(c=>diasHastaVencer(c.fecha,c.credito)<-60).reduce((a,b)=>a+b.monto,0);
-  const pct60 = total ? (vencida60/total)*100 : 0;
-
-  // % cobrado en plazo (promesas cumplidas / total promesas)
+  const vencida60 = activas.filter(c => diasHastaVencer(c.fecha, c.credito) < -60).reduce((a,b) => a + b.saldo, 0);
+  const pct60 = totalSaldo ? (vencida60 / totalSaldo) * 100 : 0;
   const ptpTot = promesas.length;
-  const ptpCump = promesas.filter(p=>p.cumplido).length;
-  const pctPTP = ptpTot ? (ptpCump/ptpTot)*100 : 0;
-
-  // Efectividad de cobranza en plazo
-  const cobradas = cuentas.filter(c=>estaLiquidada(c.id)).length;
-  const pctCobro = cuentas.length ? (cobradas/cuentas.length)*100 : 0;
-
-  return {dso, pct60, pctPTP, pctCobro, total, vencida60};
+  const ptpCump = promesas.filter(p => p.cumplido).length;
+  const pctPTP = ptpTot ? (ptpCump / ptpTot) * 100 : 0;
+  const cobradas = cuentas.filter(c => estaLiquidada(c.id)).length;
+  const pctCobro = cuentas.length ? (cobradas / cuentas.length) * 100 : 0;
+  return { edadPromedio, pct60, pctPTP, pctCobro, totalSaldo, vencida60, activas };
 }
 
-function semaforo(v, meta, tipo){
-  if(tipo==='max') return v<=meta?'sem-green':v<=meta*1.2?'sem-yellow':'sem-red';
-  return v>=meta?'sem-green':v>=meta*0.8?'sem-yellow':'sem-red';
-}
-function semaforoIcon(cls){ return cls==='sem-green'?'🟢':cls==='sem-yellow'?'🟡':'🔴'; }
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  RENDER DASHBOARD                                                ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function renderDashboard(){
   const k = calcularKPIs();
-  const dsoC = semaforo(k.dso,45,'max');
-  const p60C = semaforo(k.pct60,10,'max');
-  const ptpC = semaforo(k.pctPTP,85,'min');
-  const cobC = semaforo(k.pctCobro,70,'min');
+  const edadC = semaforo(k.edadPromedio, 45, 'max');
+  const p60C = semaforo(k.pct60, 10, 'max');
+  const ptpC = semaforo(k.pctPTP, 85, 'min');
+  const cobC = semaforo(k.pctCobro, 70, 'min');
 
-  document.getElementById('kpi-grid').innerHTML = `
-    <div class="kpi ${dsoC.replace('sem-','').replace('green','green').replace('yellow','yellow').replace('red','red')}">
-      <div class="kpi-label">DSO — Días promedio</div>
-      <div class="kpi-val ${dsoC}">${k.dso.toFixed(1)}</div>
-      <div class="kpi-sub">${semaforoIcon(dsoC)} Meta: ≤45 días</div>
+  byId('kpi-grid').innerHTML = `
+    <div class="kpi ${edadC.includes('green') ? 'green' : edadC.includes('yellow') ? 'yellow' : 'red'}">
+      <div class="kpi-label">Edad prom. saldo pendiente</div>
+      <div class="kpi-val ${edadC}">${k.edadPromedio.toFixed(1)}</div>
+      <div class="kpi-sub">${semaforoIcon(edadC)} Referencia: ≤45 días</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Cartera Activa Total</div>
-      <div class="kpi-val" style="color:var(--accent)">$${(k.total/1000).toFixed(0)}K</div>
-      <div class="kpi-sub">Vencida: $${(k.vencida60/1000).toFixed(0)}K</div>
+      <div class="kpi-val" style="color:var(--accent)">$${fmt(k.totalSaldo)}</div>
+      <div class="kpi-sub">Vencida 60+: $${fmt(k.vencida60)}</div>
     </div>
-    <div class="kpi">
+    <div class="kpi ${p60C.includes('green') ? 'green' : p60C.includes('yellow') ? 'yellow' : 'red'}">
       <div class="kpi-label">% Cartera Vencida +60d</div>
       <div class="kpi-val ${p60C}">${k.pct60.toFixed(1)}%</div>
       <div class="kpi-sub">${semaforoIcon(p60C)} Meta: ≤10%</div>
     </div>
-    <div class="kpi">
+    <div class="kpi ${ptpC.includes('green') ? 'green' : ptpC.includes('yellow') ? 'yellow' : 'red'}">
       <div class="kpi-label">PTP Cumplidas</div>
       <div class="kpi-val ${ptpC}">${k.pctPTP.toFixed(1)}%</div>
       <div class="kpi-sub">${semaforoIcon(ptpC)} Meta: ≥85%</div>
     </div>`;
 
-  // Alertas críticas
   const alertas = [];
-  cuentas.filter(c=>!estaLiquidada(c.id)).forEach(c=>{
-    const dv = -diasHastaVencer(c.fecha,c.credito);
-    const cli = clientes.find(x=>x.id==c.cliente);
-    if(dv>60) alertas.push(`<div class="alert alert-danger">⛔ <strong>${cli?.nombre||'?'}</strong> — $${fmt(c.monto)} vencido hace ${dv} días (>${c.credito+60} días)</div>`);
-    else if(dv>0) alertas.push(`<div class="alert alert-warn">⚠️ <strong>${cli?.nombre||'?'}</strong> — $${fmt(c.monto)} vencido hace ${dv} días</div>`);
+  k.activas.forEach(c => {
+    const dv = -diasHastaVencer(c.fecha, c.credito);
+    const cli = clientes.find(x => eq(x.id, c.cliente));
+    if(dv > 60) alertas.push(`<div class="alert alert-danger">⛔ <strong>${cli?.nombre || '?'}</strong> — saldo $${fmt(c.saldo)} vencido hace ${dv} días</div>`);
+    else if(dv > 0) alertas.push(`<div class="alert alert-warn">⚠️ <strong>${cli?.nombre || '?'}</strong> — saldo $${fmt(c.saldo)} vencido hace ${dv} días</div>`);
   });
-  document.getElementById('alertas-criticas').innerHTML = alertas.slice(0,5).join('');
+  byId('alertas-criticas').innerHTML = alertas.slice(0, 5).join('') || '<div class="alert alert-good">✅ Sin alertas críticas en este momento</div>';
 
-  // Distribución por banda
-  const bandas = {A:{cnt:0,monto:0},B:{cnt:0,monto:0},C:{cnt:0,monto:0},Sin:{cnt:0,monto:0}};
-  cuentas.filter(c=>!estaLiquidada(c.id)).forEach(c=>{
-    const sc = scores.find(s=>s.cliente==c.cliente);
-    const b = sc?sc.banda:'Sin';
-    bandas[b].cnt++; bandas[b].monto+=c.monto;
+  const bandas = { A:{cnt:0,monto:0}, B:{cnt:0,monto:0}, C:{cnt:0,monto:0}, Sin:{cnt:0,monto:0} };
+  k.activas.forEach(c => {
+    const sc = scores.find(s => eq(s.cliente, c.cliente));
+    const b = sc ? sc.banda : 'Sin';
+    bandas[b].cnt++;
+    bandas[b].monto += c.saldo;
   });
-  const distHtml = `<table><tr><th>Banda</th><th>Cuentas</th><th>Monto</th></tr>
-    ${['A','B','C','Sin'].map(b=>`<tr><td><span class="badge badge-${b}">${b==='Sin'?'Sin score':b}</span></td><td>${bandas[b].cnt}</td><td>$${fmt(bandas[b].monto)}</td></tr>`).join('')}
-  </table>`;
-  document.getElementById('distribucion-tabla').innerHTML = distHtml;
+  byId('distribucion-tabla').innerHTML = `
+    <table>
+      <tr><th>Banda</th><th>Cuentas</th><th>Saldo</th></tr>
+      ${['A','B','C','Sin'].map(b => `
+        <tr>
+          <td><span class="badge ${b === 'Sin' ? 'badge-S' : 'badge-' + b}">${b === 'Sin' ? 'Sin score' : b}</span></td>
+          <td>${bandas[b].cnt}</td>
+          <td>$${fmt(bandas[b].monto)}</td>
+        </tr>`).join('')}
+    </table>`;
 
-  // Aging de saldo
-  const aging = [{label:'Al corriente',monto:0},{label:'1–30d vencido',monto:0},{label:'31–60d vencido',monto:0},{label:'>60d vencido',monto:0}];
-  cuentas.filter(c=>!estaLiquidada(c.id)).forEach(c=>{
-    const dv = -diasHastaVencer(c.fecha,c.credito);
-    if(dv<=0) aging[0].monto+=c.monto;
-    else if(dv<=30) aging[1].monto+=c.monto;
-    else if(dv<=60) aging[2].monto+=c.monto;
-    else aging[3].monto+=c.monto;
+  const aging = [
+    { label: 'Al corriente', monto: 0 },
+    { label: '1–30d vencido', monto: 0 },
+    { label: '31–60d vencido', monto: 0 },
+    { label: '>60d vencido', monto: 0 }
+  ];
+  k.activas.forEach(c => {
+    const dv = -diasHastaVencer(c.fecha, c.credito);
+    if(dv <= 0) aging[0].monto += c.saldo;
+    else if(dv <= 30) aging[1].monto += c.saldo;
+    else if(dv <= 60) aging[2].monto += c.saldo;
+    else aging[3].monto += c.saldo;
   });
-  const totalAging = aging.reduce((a,b)=>a+b.monto,0)||1;
-  const agingHtml = aging.map((a,i)=>{
-    const pct=(a.monto/totalAging*100).toFixed(1);
-    const col=i===0?'var(--good)':i===1?'var(--accent2)':i===2?'var(--warn)':'var(--danger)';
+  const totalAging = aging.reduce((a,b) => a + b.monto, 0) || 1;
+  byId('aging-tabla').innerHTML = aging.map((a, i) => {
+    const pct = (a.monto / totalAging * 100).toFixed(1);
+    const col = i === 0 ? 'var(--good)' : i === 1 ? 'var(--accent2)' : i === 2 ? 'var(--warn)' : 'var(--danger)';
     return `<div style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;font-size:.8rem"><span>${a.label}</span><span style="font-family:var(--mono);color:${col}">$${fmt(a.monto)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:.8rem"><span>${a.label}</span><span class="mono" style="color:${col}">$${fmt(a.monto)}</span></div>
       <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${col}"></div></div>
     </div>`;
   }).join('');
-  document.getElementById('aging-tabla').innerHTML = agingHtml;
 
-  // Tabla principal
-  let html = `<tr><th>Cliente</th><th>Folio</th><th>Score</th><th>Plazo</th><th>Monto</th><th>Vence en</th><th>Promesa</th><th>Estado</th></tr>`;
-  cuentas.filter(c=>!estaLiquidada(c.id)).forEach(c=>{
-    const cli = clientes.find(x=>x.id==c.cliente);
-    const sc  = scores.find(s=>s.cliente==c.cliente);
-    const dv  = diasHastaVencer(c.fecha,c.credito);
-    const dvClass = dv>5?'dias-ok':dv>0?'dias-warn':'dias-bad';
-    const ptp = promesas.find(p=>p.cuenta==c.id&&!p.cumplido);
-    const ptpHtml = ptp?`🤝 ${ptp.fecha}`:diasHastaVencer(c.fecha,c.credito)<0?'<span style="color:var(--danger)">Sin promesa</span>':'—';
-    const estado = dv<0?`<span class="badge badge-C">Vencida ${-dv}d</span>`:`<span class="badge badge-A">Al corriente</span>`;
-    html+=`<tr>
-      <td>${cli?.nombre||'?'}</td>
-      <td style="font-family:var(--mono);font-size:.75rem">${c.folio||'—'}</td>
-      <td>${sc?`<span class="badge badge-${sc.banda}">${sc.total} / ${sc.banda}</span>`:'—'}</td>
-      <td style="font-family:var(--mono)">${c.credito}d</td>
-      <td style="font-family:var(--mono)">$${fmt(c.monto)}</td>
-      <td class="dias-cell ${dvClass}">${dv<0?dv+'d VENCIDA':dv+'d'}</td>
-      <td style="font-size:.78rem">${ptpHtml}</td>
+  const activasOrdenadas = [...k.activas].sort((a,b) => diasHastaVencer(a.fecha, a.credito) - diasHastaVencer(b.fecha, b.credito));
+  let html = `<tr><th>Cliente</th><th>Folio</th><th>Score</th><th>Original</th><th>Pagado</th><th>Saldo</th><th>Vence</th><th>Promesa</th><th>Estado</th><th>Acciones</th></tr>`;
+  activasOrdenadas.forEach(c => {
+    const cli = clientes.find(x => eq(x.id, c.cliente));
+    const sc = scores.find(s => eq(s.cliente, c.cliente));
+    const dv = diasHastaVencer(c.fecha, c.credito);
+    const ptp = promesas.find(p => eq(p.cuenta, c.id) && !p.cumplido);
+    const dvClass = dv > 5 ? 'dias-ok' : dv > 0 ? 'dias-warn' : 'dias-bad';
+    const estado = dv < 0 ? `<span class="badge badge-C">Vencida ${-dv}d</span>` : `<span class="badge badge-A">Al corriente</span>`;
+    html += `<tr>
+      <td><strong>${cli?.nombre || '?'}</strong><br><span class="muted" style="font-size:.72rem">${c.producto || '—'}</span></td>
+      <td class="mono" style="font-size:.75rem">${c.folio || '—'}</td>
+      <td>${sc ? `<span class="badge badge-${sc.banda}">${sc.total} / ${sc.banda}</span>` : '<span class="muted">—</span>'}</td>
+      <td class="mono">$${fmt(c.monto)}</td>
+      <td class="mono">$${fmt(c.pagado)}</td>
+      <td class="mono">$${fmt(c.saldo)}</td>
+      <td class="dias-cell ${dvClass}">${formatDate(fechaVencimientoISO(c.fecha, c.credito))}<br>${dv < 0 ? `${-dv}d vencida` : `${dv}d`}</td>
+      <td style="font-size:.78rem">${ptp ? `🤝 ${formatDate(ptp.fecha)}` : '—'}</td>
       <td>${estado}</td>
+      <td>
+        <div class="btn-row">
+          <button class="btn btn-sm btn-warn" onclick="editarCuenta(${c.id})">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="eliminarCuenta(${c.id})">🗑</button>
+        </div>
+      </td>
     </tr>`;
   });
-  document.getElementById('tabla-main').innerHTML = html;
+  if(!activasOrdenadas.length) html += `<tr><td colspan="10" style="color:var(--muted);text-align:center;padding:24px">No hay cartera activa</td></tr>`;
+  byId('tabla-main').innerHTML = html;
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  RENDER CLIENTES                                                 ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function renderClientes(){
-  let html = `<tr><th>Nombre</th><th>RFC</th><th>Cultivo</th><th>Score</th><th></th></tr>`;
-  clientes.forEach(c=>{
-    const sc = scores.find(s=>s.cliente==c.id);
-    html+=`<tr>
-      <td><strong>${c.nombre}</strong><br><span style="font-size:.72rem;color:var(--muted)">${c.lugar||''}</span></td>
-      <td style="font-family:var(--mono);font-size:.78rem">${c.rfc||'—'}</td>
-      <td style="font-size:.78rem">${c.cultivo||'—'} ${c.ha?c.ha+'ha':''}</td>
-      <td>${sc?`<span class="badge badge-${sc.banda}">${sc.total} / ${sc.banda}</span>`:'<span style="color:var(--muted);font-size:.75rem">Sin score</span>'}</td>
-      <td><button class="btn btn-sm btn-danger" onclick="eliminarCliente(${c.id})">✕</button></td>
+  let html = `<tr><th>Nombre</th><th>RFC</th><th>Cultivo</th><th>Score</th><th>Cuentas</th><th>Acciones</th></tr>`;
+  clientes.forEach(c => {
+    const sc = scores.find(s => eq(s.cliente, c.id));
+    const cuentasCli = cuentas.filter(cta => eq(cta.cliente, c.id));
+    const saldoCli = cuentasCli.reduce((t,cta) => t + saldoCuenta(cta), 0);
+    html += `<tr>
+      <td><strong>${c.nombre}</strong><br><span class="muted" style="font-size:.72rem">${c.lugar || ''}</span></td>
+      <td class="mono" style="font-size:.78rem">${c.rfc || '—'}</td>
+      <td style="font-size:.78rem">${c.cultivo || '—'} ${c.ha ? `· ${fmtInt(c.ha)} ha` : ''}</td>
+      <td>${sc ? `<span class="badge badge-${sc.banda}">${sc.total} / ${sc.banda}</span>` : '<span class="muted">Sin score</span>'}</td>
+      <td style="font-size:.78rem">${cuentasCli.length} · Saldo $${fmt(saldoCli)}</td>
+      <td>
+        <div class="btn-row">
+          <button class="btn btn-sm btn-warn" onclick="editarCliente(${c.id})">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="eliminarCliente(${c.id})">🗑</button>
+        </div>
+      </td>
     </tr>`;
   });
-  if(!clientes.length) html+=`<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:24px">No hay clientes registrados</td></tr>`;
-  document.getElementById('tabla-clientes').innerHTML=html;
-  poblarSelects();
+  if(!clientes.length) html += `<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:24px">No hay clientes registrados</td></tr>`;
+  byId('tabla-clientes').innerHTML = html;
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  RENDER SCORING                                                  ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function renderScoring(){
-  poblarSelects();
-  let html=`<tr><th>Cliente</th><th>Score</th><th>Banda</th><th>Fecha</th></tr>`;
-  scores.forEach(s=>{
-    const cli=clientes.find(c=>c.id==s.cliente);
-    html+=`<tr>
-      <td>${cli?.nombre||'?'}</td>
-      <td style="font-family:var(--mono)">${s.total}/100</td>
+  let html = `<tr><th>Cliente</th><th>Score</th><th>Banda</th><th>Fecha</th><th>Acciones</th></tr>`;
+  scores.forEach(s => {
+    const cli = clientes.find(c => eq(c.id, s.cliente));
+    html += `<tr>
+      <td>${cli?.nombre || '?'}</td>
+      <td class="mono">${s.total}/100</td>
       <td><span class="badge badge-${s.banda}">Banda ${s.banda}</span></td>
-      <td style="font-size:.75rem;color:var(--muted)">${s.fecha||'—'}</td>
+      <td style="font-size:.75rem;color:var(--muted)">${s.fecha || '—'}</td>
+      <td>
+        <div class="btn-row">
+          <button class="btn btn-sm btn-warn" onclick="editarScore(${s.id})">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="eliminarScore(${s.id})">🗑</button>
+        </div>
+      </td>
     </tr>`;
   });
-  if(!scores.length) html+=`<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:24px">Sin scores registrados</td></tr>`;
-  document.getElementById('tabla-scores').innerHTML=html;
+  if(!scores.length) html += `<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:24px">Sin scores registrados</td></tr>`;
+  byId('tabla-scores').innerHTML = html;
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  RENDER CUENTAS                                                  ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function renderCuentas(){
-  poblarSelects();
-  let html=`<tr><th>Cliente</th><th>Folio</th><th>Monto</th><th>Plazo</th><th>Vence</th><th>Estado</th></tr>`;
-  cuentas.forEach(c=>{
-    const cli=clientes.find(x=>x.id==c.cliente);
-    const dv=diasHastaVencer(c.fecha,c.credito);
-    const liq=estaLiquidada(c.id);
-    html+=`<tr>
-      <td>${cli?.nombre||'?'}</td>
-      <td style="font-family:var(--mono);font-size:.75rem">${c.folio||'—'}</td>
-      <td style="font-family:var(--mono)">$${fmt(c.monto)}</td>
-      <td style="font-family:var(--mono)">${c.credito}d</td>
-      <td style="font-family:var(--mono);font-size:.78rem">${c.fecha}</td>
-      <td>${liq?'<span class="badge badge-A">Liquidada</span>':dv<0?'<span class="badge badge-C">Vencida</span>':'<span class="badge" style="background:rgba(0,212,170,.1);color:var(--accent)">Vigente</span>'}</td>
+  let html = `<tr><th>Cliente</th><th>Folio</th><th>Original</th><th>Pagado</th><th>Saldo</th><th>Plazo</th><th>Venta</th><th>Vence</th><th>Estado</th><th>Acciones</th></tr>`;
+  const lista = [...cuentas].sort((a,b) => fechaVencimiento(a.fecha, a.credito) - fechaVencimiento(b.fecha, b.credito));
+  lista.forEach(c => {
+    const cli = clientes.find(x => eq(x.id, c.cliente));
+    const pagado = totalPagadoCuenta(c.id);
+    const saldo = saldoCuenta(c);
+    const dv = diasHastaVencer(c.fecha, c.credito);
+    const estado = estaLiquidada(c.id)
+      ? '<span class="badge badge-A">Liquidada</span>'
+      : dv < 0
+        ? `<span class="badge badge-C">Vencida ${-dv}d</span>`
+        : '<span class="badge badge-B">Vigente</span>';
+    html += `<tr>
+      <td>${cli?.nombre || '?'}</td>
+      <td class="mono" style="font-size:.75rem">${c.folio || '—'}</td>
+      <td class="mono">$${fmt(c.monto)}</td>
+      <td class="mono">$${fmt(pagado)}</td>
+      <td class="mono">$${fmt(saldo)}</td>
+      <td class="mono">${c.credito}d</td>
+      <td class="mono" style="font-size:.78rem">${formatDate(c.fecha)}</td>
+      <td class="mono" style="font-size:.78rem">${formatDate(fechaVencimientoISO(c.fecha, c.credito))}</td>
+      <td>${estado}</td>
+      <td>
+        <div class="btn-row">
+          <button class="btn btn-sm btn-warn" onclick="editarCuenta(${c.id})">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="eliminarCuenta(${c.id})">🗑</button>
+        </div>
+      </td>
     </tr>`;
   });
-  if(!cuentas.length) html+=`<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:24px">Sin cuentas registradas</td></tr>`;
-  document.getElementById('tabla-cuentas').innerHTML=html;
+  if(!cuentas.length) html += `<tr><td colspan="10" style="color:var(--muted);text-align:center;padding:24px">Sin cuentas registradas</td></tr>`;
+  byId('tabla-cuentas').innerHTML = html;
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  RENDER PROMESAS                                                 ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function renderPromesas(){
-  poblarSelects();
-  let html='';
-  if(!promesas.length){ html='<div style="color:var(--muted);font-size:.85rem;text-align:center;padding:24px">Sin promesas registradas</div>'; }
-  promesas.slice().reverse().forEach(p=>{
-    const cli=clientes.find(x=>x.id==p.cliente);
-    const cuenta=cuentas.find(c=>c.id==p.cuenta);
-    const vencida=!p.cumplido && new Date()>new Date(p.fecha);
-    const dot=p.cumplido?'ok':vencida?'venc':'pend';
-    const estado=p.cumplido?'✅ Cumplida':vencida?'🔴 Vencida':'🟡 Pendiente';
-    html+=`<div class="ptp-item">
+  let html = '';
+  if(!promesas.length) html = '<div style="color:var(--muted);font-size:.85rem;text-align:center;padding:24px">Sin promesas registradas</div>';
+  [...promesas].sort((a,b) => String(b.fecha).localeCompare(String(a.fecha))).forEach(p => {
+    const cli = clientes.find(x => eq(x.id, p.cliente));
+    const cuenta = cuentas.find(c => eq(c.id, p.cuenta));
+    const saldo = cuenta ? saldoCuenta(cuenta) : 0;
+    const vencida = !p.cumplido && new Date((p.fecha || today()) + 'T12:00:00') < new Date();
+    const dot = p.cumplido ? 'ok' : vencida ? 'venc' : 'pend';
+    const estado = p.cumplido ? '✅ Cumplida' : vencida ? '🔴 Vencida' : '🟡 Pendiente';
+    html += `<div class="ptp-item">
       <div class="ptp-dot ${dot}"></div>
       <div class="ptp-info">
-        <div class="ptp-nombre">${cli?.nombre||'?'}</div>
-        <div class="ptp-fecha">${p.fecha} · ${p.canal||'—'} · ${estado}</div>
-        ${p.notas?`<div style="font-size:.72rem;color:var(--muted);margin-top:2px">${p.notas}</div>`:''}
+        <div class="ptp-nombre">${cli?.nombre || '?'} ${cuenta?.folio ? `· ${cuenta.folio}` : ''}</div>
+        <div class="ptp-fecha">${formatDate(p.fecha)} · ${p.canal || '—'} · ${estado}</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">Saldo actual cuenta: $${fmt(saldo)}</div>
+        ${p.notas ? `<div style="font-size:.72rem;color:var(--muted);margin-top:2px">${p.notas}</div>` : ''}
       </div>
-      <div class="ptp-monto">$${fmt(p.montoComprometido||cuenta?.monto||0)}</div>
-      ${!p.cumplido?`<button class="btn btn-sm btn-primary" onclick="cumplirPromesa(${p.id})">✔ Cumplida</button>`:''}
+      <div class="ptp-monto">$${fmt(p.montoComprometido || saldo)}</div>
+      <div class="btn-row">
+        ${!p.cumplido ? `<button class="btn btn-sm btn-primary" onclick="cumplirPromesa(${p.id})">✔</button>` : ''}
+        <button class="btn btn-sm btn-warn" onclick="editarPromesa(${p.id})">✏️</button>
+        <button class="btn btn-sm btn-danger" onclick="eliminarPromesa(${p.id})">🗑</button>
+      </div>
     </div>`;
   });
-  document.getElementById('lista-promesas').innerHTML=html;
+  byId('lista-promesas').innerHTML = html;
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  RENDER COBRANZA                                                 ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function renderCobranza(){
-  poblarSelects();
-  let html=`<tr><th>Cliente</th><th>Monto</th><th>Forma</th><th>Referencia</th><th>Fecha</th><th>Estado</th></tr>`;
-  pagos.slice().reverse().forEach(p=>{
-    const cli=clientes.find(x=>x.id==p.cliente);
-    html+=`<tr>
-      <td>${cli?.nombre||'?'}</td>
-      <td style="font-family:var(--mono)">$${fmt(p.monto)}</td>
-      <td style="font-size:.78rem">${p.forma||'—'}</td>
-      <td style="font-family:var(--mono);font-size:.75rem">${p.ref||'—'}</td>
-      <td style="font-size:.78rem">${p.fecha||'—'}</td>
-      <td>${p.liquidado?'<span class="badge badge-A">Liquidó</span>':'<span class="badge badge-B">Parcial</span>'}</td>
+  let html = `<tr><th>Cliente</th><th>Cuenta</th><th>Monto</th><th>Forma</th><th>Referencia</th><th>Fecha</th><th>Impacto</th><th>Acciones</th></tr>`;
+  [...pagos].sort((a,b) => String(b.fecha).localeCompare(String(a.fecha))).forEach(p => {
+    const cli = clientes.find(x => eq(x.id, p.cliente));
+    const cta = cuentas.find(c => eq(c.id, p.cuenta));
+    const saldo = cta ? saldoCuenta(cta) : 0;
+    html += `<tr>
+      <td>${cli?.nombre || '?'}</td>
+      <td class="mono" style="font-size:.75rem">${cta?.folio || cta?.id || '—'}</td>
+      <td class="mono">$${fmt(p.monto)}</td>
+      <td style="font-size:.78rem">${p.forma || '—'}</td>
+      <td class="mono" style="font-size:.75rem">${p.ref || '—'}</td>
+      <td style="font-size:.78rem">${formatDate(p.fecha)}</td>
+      <td>${cta ? (estaLiquidada(cta.id) ? '<span class="badge badge-A">Liquidó cuenta</span>' : `<span class="badge badge-B">Saldo $${fmt(saldo)}</span>`) : '<span class="muted">Cuenta borrada</span>'}</td>
+      <td>
+        <div class="btn-row">
+          <button class="btn btn-sm btn-warn" onclick="editarPago(${p.id})">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="eliminarPago(${p.id})">🗑</button>
+        </div>
+      </td>
     </tr>`;
   });
-  if(!pagos.length) html+=`<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:24px">Sin pagos registrados</td></tr>`;
-  document.getElementById('tabla-pagos').innerHTML=html;
+  if(!pagos.length) html += `<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Sin pagos registrados</td></tr>`;
+  byId('tabla-pagos').innerHTML = html;
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  RENDER REGLAS / SIMULADOR                                       ║
-// ╚══════════════════════════════════════════════════════════════════╝
-function renderReglas(){
-  poblarSelects();
-}
+function renderReglas(){ poblarSelects(); }
 function simularCredito(){
-  const clienteId = document.getElementById('sim-cliente').value;
-  const monto = parseFloat(document.getElementById('sim-monto').value)||0;
-  if(!clienteId){ document.getElementById('sim-resultado').innerHTML=''; return; }
+  const clienteId = byId('sim-cliente').value;
+  const monto = num(byId('sim-monto').value);
+  if(!clienteId){ byId('sim-resultado').innerHTML = ''; return; }
   const nivel = nivelCredito(clienteId);
-  const sc = scores.find(s=>s.cliente==clienteId);
-  const cli = clientes.find(c=>c.id==clienteId);
-  let html='';
-  if(nivel.dias===0){
-    html=`<div class="alert alert-danger">🚫 Crédito NO autorizado — ${nivel.motivo}</div>`;
-  } else {
-    html=`<div class="alert alert-good">✅ Crédito autorizable hasta <strong>${nivel.dias} días</strong></div>
-    <div style="margin-top:10px;font-size:.82rem">
-      <div style="margin-bottom:6px">Cliente: <strong>${cli?.nombre}</strong></div>
-      <div style="margin-bottom:6px">Banda score: <span class="badge badge-${sc?.banda||'Sin'}">${sc?.banda||'Sin score'}</span></div>
-      <div style="margin-bottom:6px">Motivo: ${nivel.motivo}</div>
-      ${monto>0?`<div style="margin-top:10px;padding:10px;background:var(--surface);border-radius:8px;font-family:var(--mono)">Monto: $${fmt(monto)} · Plazo: ${nivel.dias}d · Vence aprox.: ${new Date(Date.now()+nivel.dias*86400000).toLocaleDateString('es-MX')}</div>`:''}
-    </div>`;
+  const sc = scores.find(s => eq(s.cliente, clienteId));
+  const cli = clientes.find(c => eq(c.id, clienteId));
+  if(nivel.dias === 0){
+    byId('sim-resultado').innerHTML = `<div class="alert alert-danger">🚫 Crédito NO autorizado — ${nivel.motivo}</div>`;
+    return;
   }
-  document.getElementById('sim-resultado').innerHTML=html;
+  byId('sim-resultado').innerHTML = `<div class="alert alert-good">✅ Crédito autorizable hasta <strong>${nivel.dias} días</strong></div>
+    <div style="margin-top:10px;font-size:.82rem">
+      <div style="margin-bottom:6px">Cliente: <strong>${cli?.nombre || '?'}</strong></div>
+      <div style="margin-bottom:6px">Banda score: ${sc ? `<span class="badge badge-${sc.banda}">${sc.total} / ${sc.banda}</span>` : '<span class="badge badge-S">Sin score</span>'}</div>
+      <div style="margin-bottom:6px">Motivo: ${nivel.motivo}</div>
+      <div style="margin-bottom:6px">Límite histórico estimado: ${nivel.limiteMonto ? '$' + fmt(nivel.limiteMonto) : 'Sin referencia suficiente'}</div>
+      ${monto > 0 ? `<div style="margin-top:10px;padding:10px;background:var(--surface);border-radius:8px;font-family:var(--mono)">Monto: $${fmt(monto)} · Plazo: ${nivel.dias}d · Vence aprox.: ${formatDate(new Date(Date.now() + nivel.dias * 86400000).toISOString().split('T')[0])}${nivel.limiteMonto && monto > nivel.limiteMonto ? '<br><span style="color:var(--warn)">⚠️ Excede referencia histórica</span>' : ''}</div>` : ''}
+    </div>`;
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  RENDER COSTOS                                                   ║
-// ╚══════════════════════════════════════════════════════════════════╝
-function renderCostos(){
-  // Prellenar campos
-  if(costos.horas) document.getElementById('cost-horas').value=costos.horas;
-  if(costos.viaticos) document.getElementById('cost-viaticos').value=costos.viaticos;
-  if(costos.comunicacion) document.getElementById('cost-comunicacion').value=costos.comunicacion;
-  if(costos.admin) document.getElementById('cost-admin').value=costos.admin;
-
-  const c2c = calcularCostToCollect();
-  const costo = parseFloat(document.getElementById('cost-horas')?.value||0)+
-                parseFloat(document.getElementById('cost-viaticos')?.value||0)+
-                parseFloat(document.getElementById('cost-comunicacion')?.value||0)+
-                parseFloat(document.getElementById('cost-admin')?.value||0);
-  const recuperado = pagos.reduce((t,p)=>t+(p.monto||0),0);
-  const ratio = recuperado>0?(costo/recuperado)*100:0;
-  const veces=(ratio/100).toFixed(2);
-  const esIneficiente = ratio>100;
-  document.getElementById('cost-dashboard').innerHTML=`
+function renderCostos(prefill = true){
+  if(prefill){
+    byId('cost-horas').value = costos.horas || '';
+    byId('cost-viaticos').value = costos.viaticos || '';
+    byId('cost-comunicacion').value = costos.comunicacion || '';
+    byId('cost-admin').value = costos.admin || '';
+  }
+  const c2c = calcularCostToCollect(true);
+  const veces = c2c.recuperado > 0 ? c2c.ratio.toFixed(2) : '0.00';
+  const esIneficiente = c2c.ratio > 1;
+  byId('cost-dashboard').innerHTML = `
     <div class="kpi-grid" style="grid-template-columns:1fr 1fr;gap:12px">
-      <div class="kpi"><div class="kpi-label">Costo total cobranza</div><div class="kpi-val" style="color:var(--warn)">$${fmt(costo)}</div></div>
-      <div class="kpi"><div class="kpi-label">Recuperado período</div><div class="kpi-val" style="color:var(--good)">$${fmt(recuperado)}</div></div>
+      <div class="kpi"><div class="kpi-label">Costo total cobranza</div><div class="kpi-val" style="color:var(--warn)">$${fmt(c2c.totalCost)}</div></div>
+      <div class="kpi"><div class="kpi-label">Pagos registrados</div><div class="kpi-val" style="color:var(--good)">$${fmt(c2c.recuperado)}</div></div>
     </div>
     <div style="text-align:center;padding:20px 0">
-      <div class="cost-label">COSTO POR CADA $1 COBRADO</div>
-      <div class="cost-ratio-big" style="color:${esIneficiente?'var(--danger)':'var(--good)'}">$${veces}</div>
-      <div style="margin-top:8px">${esIneficiente?'<div class="alert alert-danger">🔴 Cobranza ineficiente — el costo supera lo recuperado</div>':'<div class="alert alert-good">🟢 Cobranza eficiente</div>'}</div>
+      <div class="kpi-label">COSTO POR CADA $1 COBRADO</div>
+      <div class="cost-ratio-big" style="color:${esIneficiente ? 'var(--danger)' : 'var(--good)'}">$${veces}</div>
+      <div style="margin-top:12px">${esIneficiente ? '<div class="alert alert-danger">🔴 Estás gastando más de $1 por cada $1 que cobras</div>' : '<div class="alert alert-good">🟢 Cobranza eficiente</div>'}</div>
     </div>`;
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  EXPORTAR CSV                                                    ║
-// ╚══════════════════════════════════════════════════════════════════╝
 function exportarCSV(tipo){
-  let headers,rows=[];
-  if(tipo==='cartera'){
-    headers=['Cliente','RFC','Score','Banda','CreditoSistema(dias)','CreditoOtorgado(dias)','Monto','Folio','FechaVenta','DiasVencer','Liquidada','FechaPromesa','CanalPromesa','EstadoPromesa'];
-    cuentas.forEach(c=>{
-      const cli=clientes.find(x=>x.id==c.cliente);
-      const sc=scores.find(s=>s.cliente==c.cliente);
-      const ptp=promesas.find(p=>p.cuenta==c.id);
-      const niv=nivelCredito(c.cliente);
-      rows.push([cli?.nombre||'',cli?.rfc||'',sc?.total||'',sc?.banda||'',niv.dias,c.credito,c.monto,c.folio||'',c.fecha,diasHastaVencer(c.fecha,c.credito),estaLiquidada(c.id)?'Sí':'No',ptp?.fecha||'',ptp?.canal||'',ptp?(ptp.cumplido?'Cumplida':'Pendiente'):'']);
+  let headers = [];
+  let rows = [];
+  if(tipo === 'cartera'){
+    headers = ['Cliente','RFC','Score','Banda','Crédito sistema (días)','Crédito otorgado (días)','Monto original','Pagado','Saldo pendiente','Folio','Fecha venta','Fecha vencimiento','Días para vencer','Liquidada','Fecha promesa','Canal promesa','Estado promesa'];
+    cuentas.forEach(c => {
+      const cli = clientes.find(x => eq(x.id, c.cliente));
+      const sc = scores.find(s => eq(s.cliente, c.cliente));
+      const ptp = promesas.find(p => eq(p.cuenta, c.id));
+      const niv = nivelCredito(c.cliente);
+      rows.push([
+        cli?.nombre || '',
+        cli?.rfc || '',
+        sc?.total || '',
+        sc?.banda || '',
+        niv.dias,
+        c.credito,
+        c.monto,
+        totalPagadoCuenta(c.id),
+        saldoCuenta(c),
+        c.folio || '',
+        c.fecha,
+        fechaVencimientoISO(c.fecha, c.credito),
+        diasHastaVencer(c.fecha, c.credito),
+        estaLiquidada(c.id) ? 'Sí' : 'No',
+        ptp?.fecha || '',
+        ptp?.canal || '',
+        ptp ? (ptp.cumplido ? 'Cumplida' : 'Pendiente') : ''
+      ]);
     });
-  } else if(tipo==='vencida'){
-    headers=['Cliente','RFC','Monto','FechaVenta','DiasVencida','UltimaPromesa','CanalContacto'];
-    cuentas.filter(c=>!estaLiquidada(c.id)&&diasHastaVencer(c.fecha,c.credito)<-60).forEach(c=>{
-      const cli=clientes.find(x=>x.id==c.cliente);
-      const ptp=promesas.find(p=>p.cuenta==c.id);
-      rows.push([cli?.nombre||'',cli?.rfc||'',c.monto,c.fecha,-diasHastaVencer(c.fecha,c.credito),ptp?.fecha||'Sin promesa',ptp?.canal||'—']);
+  } else if(tipo === 'vencida'){
+    headers = ['Cliente','RFC','Monto original','Pagado','Saldo pendiente','Fecha venta','Fecha vencimiento','Días vencida','Última promesa','Canal contacto'];
+    cuentas.filter(c => !estaLiquidada(c.id) && diasHastaVencer(c.fecha, c.credito) < -60).forEach(c => {
+      const cli = clientes.find(x => eq(x.id, c.cliente));
+      const ptp = promesas.find(p => eq(p.cuenta, c.id));
+      rows.push([
+        cli?.nombre || '',
+        cli?.rfc || '',
+        c.monto,
+        totalPagadoCuenta(c.id),
+        saldoCuenta(c),
+        c.fecha,
+        fechaVencimientoISO(c.fecha, c.credito),
+        -diasHastaVencer(c.fecha, c.credito),
+        ptp?.fecha || 'Sin promesa',
+        ptp?.canal || '—'
+      ]);
     });
   } else {
-    headers=['Cliente','MontoComprometido','FechaPromesa','Canal','Estado','Notas'];
-    promesas.forEach(p=>{
-      const cli=clientes.find(x=>x.id==p.cliente);
-      rows.push([cli?.nombre||'',p.montoComprometido||'',p.fecha,p.canal||'',p.cumplido?'Cumplida':'Pendiente',p.notas||'']);
+    headers = ['Cliente','Cuenta','Monto comprometido','Fecha promesa','Canal','Estado','Fecha cumplido','Notas'];
+    promesas.forEach(p => {
+      const cli = clientes.find(x => eq(x.id, p.cliente));
+      const cta = cuentas.find(c => eq(c.id, p.cuenta));
+      rows.push([
+        cli?.nombre || '',
+        cta?.folio || cta?.id || '',
+        p.montoComprometido || '',
+        p.fecha,
+        p.canal || '',
+        p.cumplido ? 'Cumplida' : 'Pendiente',
+        p.fechaCumplido || '',
+        p.notas || ''
+      ]);
     });
   }
   if(!rows.length){ toast('⚠️ Sin datos para exportar'); return; }
-  let csv=headers.join(',')+'\n';
-  rows.forEach(r=>{ csv+=r.map(v=>`"${v}"`).join(',')+'\n'; });
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download=`Cartera_${tipo}_${today()}.csv`; a.click();
+  let csv = headers.join(',') + '\n';
+  rows.forEach(r => { csv += r.map(v => `"${String(v).replaceAll('"','""')}"`).join(',') + '\n'; });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Cartera_${tipo}_${today()}.csv`;
+  a.click();
   URL.revokeObjectURL(url);
   toast('📤 CSV exportado');
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  POBLAR SELECTS                                                  ║
-// ╚══════════════════════════════════════════════════════════════════╝
+function optionCuentaTexto(c){
+  const cli = clientes.find(x => eq(x.id, c.cliente));
+  const saldo = saldoCuenta(c);
+  return `${cli?.nombre || '?'} · ${c.folio || c.id} · Saldo $${fmt(saldo)}`;
+}
 function poblarSelects(){
-  const ids=['cta-cliente','score-cliente','sim-cliente','pago-cuenta','ptp-cuenta'];
-  ids.forEach(id=>{
-    const el=document.getElementById(id);
+  const clienteSelects = ['cta-cliente','score-cliente','sim-cliente'];
+  clienteSelects.forEach(id => {
+    const el = byId(id);
     if(!el) return;
-    const prev=el.value;
-    if(id.includes('cuenta')||id==='ptp-cuenta'||id==='pago-cuenta'){
-      el.innerHTML='<option value="">— Seleccionar —</option>';
-      cuentas.forEach(c=>{
-        const cli=clientes.find(x=>x.id==c.cliente);
-        el.innerHTML+=`<option value="${c.id}">${cli?.nombre||'?'} · $${fmt(c.monto)} · ${c.credito}d</option>`;
-      });
-    } else {
-      el.innerHTML='<option value="">— Seleccionar —</option>';
-      clientes.forEach(c=>{ el.innerHTML+=`<option value="${c.id}">${c.nombre}</option>`; });
-    }
-    if(prev) el.value=prev;
+    const prev = el.value;
+    el.innerHTML = '<option value="">— Seleccionar —</option>';
+    clientes.forEach(c => { el.innerHTML += `<option value="${c.id}">${c.nombre}</option>`; });
+    if(prev) el.value = prev;
+  });
+
+  const cuentaSelects = ['ptp-cuenta','pago-cuenta'];
+  cuentaSelects.forEach(id => {
+    const el = byId(id);
+    if(!el) return;
+    const prev = el.value;
+    el.innerHTML = '<option value="">— Seleccionar —</option>';
+    cuentas.forEach(c => { el.innerHTML += `<option value="${c.id}">${optionCuentaTexto(c)}</option>`; });
+    if(prev) el.value = prev;
   });
 }
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║  INIT                                                            ║
-// ╚══════════════════════════════════════════════════════════════════╝
-document.addEventListener('DOMContentLoaded',()=>{
-  // Fecha de hoy como default
-  ['cta-fecha','ptp-fecha','pago-fecha'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=today(); });
+document.addEventListener('DOMContentLoaded', () => {
+  byId('cta-fecha').value = today();
+  byId('ptp-fecha').value = today();
+  byId('pago-fecha').value = today();
   poblarSelects();
-  renderDashboard();
+  limpiarScoreForm();
+  renderAll();
 });
 </script>
 </body>
